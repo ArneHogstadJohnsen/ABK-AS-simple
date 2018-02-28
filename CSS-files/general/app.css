@@ -1,0 +1,69 @@
+html, body, #container { height: 100%; }
+
+
+header{
+  padding-top: 70px;
+  padding-bottom: 30px;
+  font-size: 20px;
+  background: white;
+  height: 70px;
+  color: black;
+  font-weight: bold;
+  text-align: left;
+}
+
+
+body {
+  font-family: 'Open Sans',sans-serif;
+  color: rgba(0, 0, 0, 0.8);
+  background:  white;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+}
+
+body > section {
+  padding: 10px;
+}
+
+div.navigationBand{
+  height: 8%;
+  width: 80%;
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
+
+img {
+    padding: 0;
+    display:inline;
+    margin: 0 auto;
+    max-height: 100%;
+    max-width: 100%;
+    left:auto;
+}
+
+#container {
+  height: auto;
+  min-height: 90%;
+}
+
+
+.ui-menu {
+  background: white;
+  display: block;
+  width: 400px;
+  border: 1px solid rgba(0, 0, 255, 0.1);
+  z-index: 1000;
+}
+
+.ui-menu .ui-menu-item {
+  padding: 10px;
+}
+
+.ui-menu .ui-state-focus {
+  background:rgba(0, 0, 255, 0.1);
+}
+
+.ui-helper-hidden-accessible {
+  display: none;
+}

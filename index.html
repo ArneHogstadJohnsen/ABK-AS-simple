@@ -9,7 +9,7 @@
 
   <!-- EXTERNAL SCRIPT FILES-->
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
   <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
@@ -18,16 +18,92 @@
   <!-- LOCAL JAVASCRIPT FILES-->
   <script type="text/javascript" src="/javascripts/app.js"></script>
   <script type="text/javascript" src="/javascripts/generateOffer.js"></script>
+
 </head>
 
 <body>
   <header>
-    <img src="/Pictures/abklogo.png">
+    <img  class="imgTop" src="/Pictures/abklogo.png">
   </header>
-  <em> Dette er en 'placeholdertekst', her vil det komme en eller annen introduksjon, f.eks: Velkommen til v&aringr produktvelger. Her kan du finne energi- og effektbehov p&aring bygg samt kj&oslashre simuleringer med forskjellige varmepumper</em>
+   Dette er en 'placeholdertekst', her vil det komme en eller annen introduksjon, f.eks: Velkommen til v&aringr produktvelger. Her kan du finne energi- og effektbehov p&aring bygg samt kj&oslashre simuleringer med forskjellige varmepumper
   <div class="navigationBand">
       <img src="/Pictures/navband-Effect.png">
   </div>
+
+  <!--Div containing area where user is active, input and output -->
+  <div >
+    <p>
+      Vennligst fyll inn n&oslashdvendig informasjon nedenfor. <br>
+      Du m&aring fylle ut alle celler for &aring f&aring estimert effektbehovet.
+    </p>
+    <!--Div containing the inputs -->
+    <div class="inputArea">
+      <p>
+        <span>Kommune:</span>
+          <input class="inndata" id="municipality" onClick="this.select()" type="text">
+        <span class="dataTip" data-tip=  "Finn din kommune for &aring hente DUT og &#229;rsmiddeltemperatur. I tilfellet din kommune ikke er i listen anbefaler vi &aring s&#248;ke med fylket og velge n&#230;rmeste kommune, enten i klima eller geografisk ">
+        <img class="icon"src="/Pictures/question.png">
+        </span>
+      </p>
+      <p>
+        <span> Oppvarmet areal (BRA):</span>
+        <input class="inndata" id="area">
+        <span class="dataTip" data-tip=  "Alt bruksareal inkluderes i oppvarmet areal, selv om det periodevis holdes ved lavere temperatur. Dette inkluderer f.eks soverom ">
+        <img class="icon"src="/Pictures/question.png">
+        </span>
+      </p>
+      <p>
+         <span>Bygge&aringr:</span>
+           <input class="inndata" id="buildingYear">
+         <span class="dataTip" data-tip=  "Dette brukes for &aring estimere standarden til bygget. Ved eksisterende bygg som har blitt rehabilitert bruker du dato for rehabiliteringen ">
+         <img class="icon"src="/Pictures/question.png">
+         </span>
+      </p>
+      <p>
+        <span >Tappevann:<br><br>
+         </span>
+         <span>
+           <input type="radio" name="gender" value="male"> H&oslashyt<br>
+           <input type="radio" name="gender" value="female"> Normalt<br>
+           <input type="radio" name="gender" value="other"> Lavt
+         </span>
+         <span class="dataTip" data-tip=  "Dette brukes for &aring estimere tappevannsbehov.&#10; 'Normal' er for en familie p&aring 4,&#10; 'H&#248;y' er for familie med mye dusjing,&#10; 'Lav' er for 2-3 personer">
+         <img class="icon"src="/Pictures/question.png"><br><br>
+         </span>
+      </p>
+      <p id="historicalEnergyUse" hidden>
+         <span>Historisk energiforbruk per &aringr</span>
+           <input class="inndata" >
+           <span class="dataTip" data-tip=  "Dersom det foreligger eksisterende data p&aring energiforbruk settes dette inn her. Husk at husholdningsgjenstander m&aring trekkes fra hovedm&#229;ler, bruk 60% av total til oppvarming og inkluder ytterligere 10% om tappevann skal dekkes av varmepumpe">
+           <img class="icon"src="/Pictures/question.png">
+           </span>
+      </p>
+    </div>
+    <div class="outputArea">
+      her kommer all utdata, men det vil ogsaa vaere mulig aa legge inn historisk forbruk
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <div class="navigationTab">
       <div class="wizardTab" id="wizard">

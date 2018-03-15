@@ -1816,21 +1816,27 @@ $('#buildingYear').on('input', function() {
  if($("#buildingYear").val() >=2010 ){
       $("#buildingHeatingFrom").val(12);
       $("#buildingHeatingFrom").css("background-color", "white");
+      jQuery('#historicalEnergyUse').hide();
   }else if($("#buildingYear").val() >=2000 ){
       $("#buildingHeatingFrom").val(13);
       $("#buildingHeatingFrom").css("background-color", "white");
+      jQuery('#historicalEnergyUse').show();
     } else if($("#buildingYear").val() >=1990 ){
         $("#buildingHeatingFrom").val(14);
         $("#buildingHeatingFrom").css("background-color", "white");
+        jQuery('#historicalEnergyUse').show();
       } else if($("#buildingYear").val() >=1980 ){
           $("#buildingHeatingFrom").val(15);
           $("#buildingHeatingFrom").css("background-color", "white");
+          jQuery('#historicalEnergyUse').show();
         }else if($("#buildingYear").val() >=1970 ){
             $("#buildingHeatingFrom").val(16);
             $("#buildingHeatingFrom").css("background-color", "white");
-          }else{
+            jQuery('#historicalEnergyUse').show();
+          }else if($("#buildingYear").val() >=1800 ){
               $("#buildingHeatingFrom").val(17);
               $("#buildingHeatingFrom").css("background-color", "white");
+              jQuery('#historicalEnergyUse').show();
             }
 });
 

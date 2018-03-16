@@ -63,9 +63,9 @@
         <span >Tappevann:<br><br>
          </span>
          <span>
-           <input type="radio" name="gender" value="male"> H&oslashyt<br>
-           <input type="radio" name="gender" value="female"> Normalt<br>
-           <input type="radio" name="gender" value="other"> Lavt
+           <input type="radio" name="forbruk" value="high"> H&oslashyt<br>
+           <input type="radio" name="forbruk" value="normal"> Normalt<br>
+           <input type="radio" name="forbruk" value="low"> Lavt
          </span>
          <span class="dataTip" data-tip=  "Dette brukes for &aring estimere tappevannsbehov.&#10; 'Normal' er for en familie p&aring 4,&#10; 'H&#248;y' er for familie med mye dusjing,&#10; 'Lav' er for 2-3 personer">
          <img class="icon"src="/Pictures/question.png"><br><br>
@@ -73,14 +73,44 @@
       </p>
       <p id="historicalEnergyUse" hidden>
          <span>Historisk energiforbruk per &aringr</span>
-           <input class="inndata" >
+           <input class="inndata" id="historiskForbruk" >
            <span class="dataTip" data-tip=  "Dersom det foreligger eksisterende data p&aring energiforbruk settes dette inn her. Husk at husholdningsgjenstander m&aring trekkes fra hovedm&#229;ler, bruk 60% av total til oppvarming og inkluder ytterligere 10% om tappevann skal dekkes av varmepumpe">
            <img class="icon"src="/Pictures/question.png">
            </span>
       </p>
     </div>
     <div class="outputArea">
+      <p class="newSection">
       her kommer all utdata, men det vil ogsaa vaere mulig aa legge inn historisk forbruk
+      </p>
+      <p id="aarsmiddelTemp" hidden>
+         <span>&Aringrsmiddeltemperatur</span>
+           <input class="inndata" id="aarsmiddelVerdi" >
+           <span class="dataTip" data-tip=  "Denne informasjonen er hentet fra v&#229;r klimadatabase. Dersom lokale forhold avviker fra m&#229;lestasjonen vi har brukt kan temperaturen settes manuelt. ">
+           <img class="icon"src="/Pictures/question.png">
+           </span>
+      </p>
+      <p id="DUT" hidden>
+         <span>Dimensjonerede utetemperatur</span>
+           <input class="inndata" id="DUTverdi" >
+           <span class="dataTip" data-tip=  "Denne informasjonen er hentet fra v&#229;r klimadatabase. Dersom lokale forhold avviker fra m&#229;lestasjonen vi har brukt kan temperaturen settes manuelt. ">
+           <img class="icon"src="/Pictures/question.png">
+           </span>
+      </p>
+      <p id="balanseTemp">
+         <span>Balansetemperatur:</span>
+           <input class="inndata" id="balanseTempVerdi" >
+           <span class="dataTip" data-tip=  "Balansetemperatur vuderes som funksjon av byggestandard/bygge&#229;r.  ">
+           <img class="icon"src="/Pictures/question.png">
+           </span>
+      </p>
+      <p id="effektBehov">
+         <span>Effektbehov ved DUT:</span>
+           <span id="effektBehovVerdi" style="text-align: center;">0 kW </span>
+           <span class="dataTip" data-tip=  "Effektbehovet vurderes fra inndata ovenfor.  ">
+           <img class="icon"src="/Pictures/question.png">
+           </span>
+      </p>
     </div>
   </div>
 

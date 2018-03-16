@@ -52,6 +52,7 @@ input.inndata{
   width: 20%;
   min-width: 150px;
   display: inline-block;
+  text-align: center;
 
 }
 
@@ -79,6 +80,9 @@ img.icon {
   min-height: 90%;
 }
 
+p.newSection{
+  background-color: lightgray;
+}
 
 .radioform{
   display: inline-block;

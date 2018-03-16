@@ -403,9 +403,12 @@ var createChart = function() {
           $("#yearMeanForCalculation").val(globalTempMean);
           $("#dOTForCalculation").val(globalTempDOT);
           $("#resultTextMunicipality").html(currentPlace);
+          $("#aarsmiddelVerdi").val(globalTempMean);
+          $("#DUTverdi").val(globalTempDOT);
           $("#resultTextFylke").html(ui.item.county);
           $("#municipality").css("background-color", "white");
-
+          jQuery("#aarsmiddelTemp").show();
+          jQuery("#DUT").show();
         }
       })
       .data("ui-autocomplete")._renderItem = function(ul, item) {
@@ -916,15 +919,15 @@ var getEffectFromEnergy = function () {
   var localEnergyNeed = 0;
 
   //retrieving relevant variables for calcualtion
-  var effectDOT = Math.round(parseFloat($('#effectFromEnergyYearlyEnergyNeed').val().replace(',','.'))/2000);
-  var heatingFrom = parseFloat($('#effectFromEnergyRoomHeatingFrom').val().replace(',','.'));
-  var reportedEnergyNeed = parseFloat($('#effectFromEnergyYearlyEnergyNeed').val().replace(',','.'));
+  var effectDOT = Math.round(parseFloat($('#historiskForbruk').val().replace(',','.'))/2000);
+  var heatingFrom = parseFloat($('#balanseTempVerdi').val().replace(',','.'));
+  var reportedEnergyNeed = parseFloat($('#historiskForbruk').val().replace(',','.'));
   var effectNow = 0;
   var effectLast = 0;
   var temperature = 0;
   var durationNow = 0;
   var durationLast = 0;
-  var temperatureLast = globalEffectFromEnergyTempDOT;
+  var temperatureLast = globalTempDOT;
 
   //defines new durationarray and the array for grahing
   var localDurationArray = [];
@@ -934,7 +937,7 @@ var getEffectFromEnergy = function () {
 
   //defines new outdoor temperatureArray
   var localTemperatureArray = [];
-  localTemperatureArray.push(globalEffectFromEnergyTempDOT);
+  localTemperatureArray.push(globalTempDOT);
   var n = 0;
   for (var i = 1; i < localDurationArray.length; i++){
     while (n < globalDurationArray.length && localDurationArray[i] > globalDurationArray[n]) {
@@ -965,7 +968,7 @@ var getEffectFromEnergy = function () {
       durationNow = localDurationArray[i];
       //checks if outdoor temperature is such that there is no need for heating
       if(temperature < heatingFrom) {
-        effectNow = effectDOT * ((temperature - heatingFrom) / ( globalEffectFromEnergyTempDOT - heatingFrom ));
+        effectNow = effectDOT * ((temperature - heatingFrom) / ( globalTempDOT - heatingFrom ));
       }else {
         effectNow = 0;
       }
@@ -1452,8 +1455,8 @@ var updateHistoricalvalues = function (){
 var updateEffectValues = function (){
   $('#effecFromEnergyValue').html( getEffectFromEnergy());
   //inserting the value for effect in calculation step
-  $("#buildingEffectNeed").val(getEffectFromEnergy());
-  $("#buildingEffectNeed").trigger("input");
+  $("#effektBehovVerdi").html(getEffectFromEnergy() + ' kW');
+  //$("#buildingEffectNeed").trigger("input");
 }
 
 //effectCalculation from U values and area
@@ -1744,16 +1747,16 @@ jQuery('.submitChart1').on('click',function(event){
   });
 
   // Update values live
-  $('#effectFromEnergyYearlyEnergyNeed').on('input', function() {
-    if ( $("#effectFromEnergyRoomHeatingFrom").val() != "" && $("#effectFromEnergyMunicipality").val() != "" && $("#effectFromEnergyIndoorTemp").val() != ""){
-      getGlobalTemperatureArray(globalEffectFromEnergyTemMean,globalEffectFromEnergyTempDOT);
+  $('#historiskForbruk').on('input', function() {
+    if ( $("#balanseTempVerdi").val() != "" && $("#municipality").val() != ""){
+      getGlobalTemperatureArray(globalTempMean,globalTempDOT);
       updateEffectValues();
     }else{
-       if ( $("#effectFromEnergyRoomHeatingFrom").val() == "" ){
-        $("#effectFromEnergyRoomHeatingFrom").css("background-color", "yellow");
+       if ( $("#balanseTempVerdi").val() == "" ){
+        $("#balanseTempVerdi").css("background-color", "yellow");
         }
-        if ( $("#effectFromEnergyMunicipality").val() == "" ){
-          $("#effectFromEnergyMunicipality").css("background-color", "yellow");
+        if ( $("#municipality").val() == "" ){
+          $("#municipality").css("background-color", "yellow");
         }
       }
   });
@@ -1797,8 +1800,8 @@ jQuery('.submitChart1').on('click',function(event){
   });
 
   // Update values live
-  $('#effectFromEnergyRoomHeatingFrom').on('input', function() {
-    if ( $("#effectFromEnergyYearlyEnergyNeed").val() != "" && $("#effectFromEnergyMunicipality").val() != ""){
+  $('#balanseTempVerdi').on('input', function() {
+    if ( $("#historiskForbruk").val() != "" && $("#municipality").val() != ""){
       getGlobalTemperatureArray(globalEffectFromEnergyTemMean,globalEffectFromEnergyTempDOT);
       updateEffectValues();
     }
@@ -1814,30 +1817,35 @@ $('#buildingHeatingFrom').on('input', function() {
 
 $('#buildingYear').on('input', function() {
  if($("#buildingYear").val() >=2010 ){
-      $("#buildingHeatingFrom").val(12);
-      $("#buildingHeatingFrom").css("background-color", "white");
+      $("#balanseTempVerdi").val(12);
+      $("#balanseTempVerdi").css("background-color", "white");
       jQuery('#historicalEnergyUse').hide();
   }else if($("#buildingYear").val() >=2000 ){
-      $("#buildingHeatingFrom").val(13);
-      $("#buildingHeatingFrom").css("background-color", "white");
+      $("#balanseTempVerdi").val(13);
+      $("#balanseTempVerdi").css("background-color", "white");
       jQuery('#historicalEnergyUse').show();
     } else if($("#buildingYear").val() >=1990 ){
-        $("#buildingHeatingFrom").val(14);
-        $("#buildingHeatingFrom").css("background-color", "white");
+        $("#balanseTempVerdi").val(14);
+        $("#balanseTempVerdi").css("background-color", "white");
         jQuery('#historicalEnergyUse').show();
       } else if($("#buildingYear").val() >=1980 ){
-          $("#buildingHeatingFrom").val(15);
-          $("#buildingHeatingFrom").css("background-color", "white");
+          $("#balanseTempVerdi").val(15);
+          $("#balanseTempVerdi").css("background-color", "white");
           jQuery('#historicalEnergyUse').show();
         }else if($("#buildingYear").val() >=1970 ){
-            $("#buildingHeatingFrom").val(16);
-            $("#buildingHeatingFrom").css("background-color", "white");
+            $("#balanseTempVerdi").val(16);
+            $("#balanseTempVerdi").css("background-color", "white");
             jQuery('#historicalEnergyUse').show();
-          }else if($("#buildingYear").val() >=1800 ){
-              $("#buildingHeatingFrom").val(17);
-              $("#buildingHeatingFrom").css("background-color", "white");
+          }else if($("#buildingYear").val() >=1000 ){
+              $("#balanseTempVerdi").val(17);
+              $("#balanseTempVerdi").css("background-color", "white");
               jQuery('#historicalEnergyUse').show();
             }
+
+            if ( $("#historiskForbruk").val() != "" && $("#municipality").val() != "" ){
+                getGlobalTemperatureArray(globalTempMean,globalTempDOT);
+                updateEffectValues();
+              }
 });
 
 $('#yearMeanForCalculation').on('input', function() {

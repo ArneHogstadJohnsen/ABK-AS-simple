@@ -104,7 +104,9 @@ span.dataTip {
   line-height: 20px;
   vertical-align: middle;
 }
-
+span.resultSpan {
+ text-align: center;
+}
 
 .ui-menu {
   background: white;

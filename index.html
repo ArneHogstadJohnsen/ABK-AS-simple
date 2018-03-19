@@ -54,7 +54,7 @@
       </p>
       <p>
          <span>Bygge&aringr:</span>
-           <input class="inndata" id="buildingYear">
+           <input class="inndata" id="buildingYear" onClick="this.select()">
          <span class="dataTip" data-tip=  "Dette brukes for &aring estimere standarden til bygget. Ved eksisterende bygg som har blitt rehabilitert bruker du dato for rehabiliteringen ">
          <img class="icon"src="/Pictures/question.png">
          </span>
@@ -73,8 +73,15 @@
       </p>
       <p id="historicalEnergyUse" hidden>
          <span>Historisk energiforbruk per &aringr</span>
-           <input class="inndata" id="historiskForbruk" >
+           <input class="inndata" id="historiskForbruk" onClick="this.select()">
            <span class="dataTip" data-tip=  "Dersom det foreligger eksisterende data p&aring energiforbruk settes dette inn her. Husk at husholdningsgjenstander m&aring trekkes fra hovedm&#229;ler, bruk 60% av total til oppvarming og inkluder ytterligere 10% om tappevann skal dekkes av varmepumpe">
+           <img class="icon"src="/Pictures/question.png">
+           </span>
+      </p>
+      <p id="normForbruk" >
+         <span>Normtall energiforbruk per &aringr</span>
+           <span class="resultSpan" id="normtallEnergy">0 kWh</span>
+           <span class="dataTip" data-tip=  "Vi bruker klimasone, byggets alder og areal med normtall. Dette gir en god pekepinn p&#229; forventet energibehov til bygget.">
            <img class="icon"src="/Pictures/question.png">
            </span>
       </p>
@@ -85,7 +92,7 @@
       </p>
       <p id="aarsmiddelTemp" hidden>
          <span>&Aringrsmiddeltemperatur</span>
-           <input class="inndata" id="aarsmiddelVerdi" >
+           <input class="inndata" id="aarsmiddelVerdi" onClick="this.select()" >
            <span class="dataTip" data-tip=  "Denne informasjonen er hentet fra v&#229;r klimadatabase. Dersom lokale forhold avviker fra m&#229;lestasjonen vi har brukt kan temperaturen settes manuelt. ">
            <img class="icon"src="/Pictures/question.png">
            </span>
@@ -99,7 +106,7 @@
       </p>
       <p id="balanseTemp">
          <span>Balansetemperatur:</span>
-           <input class="inndata" id="balanseTempVerdi" >
+           <input class="inndata" id="balanseTempVerdi" onClick="this.select()">
            <span class="dataTip" data-tip=  "Balansetemperatur vuderes som funksjon av byggestandard/bygge&#229;r.  ">
            <img class="icon"src="/Pictures/question.png">
            </span>

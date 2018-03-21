@@ -25,6 +25,7 @@
   <header>
     <img  class="imgTop" src="/Pictures/abklogo.png">
   </header>
+  <div id="container">
    Dette er en 'placeholdertekst', her vil det komme en eller annen introduksjon, f.eks: Velkommen til v&aringr produktvelger. Her kan du finne energi- og effektbehov p&aring bygg samt kj&oslashre simuleringer med forskjellige varmepumper
   <div class="navigationBand">
       <img src="/Pictures/navband-Effect.png">
@@ -34,7 +35,7 @@
   <div >
     <p>
       Vennligst fyll inn n&oslashdvendig informasjon nedenfor. <br>
-      Du m&aring fylle ut alle celler for &aring f&aring estimert effektbehovet.
+      Du m&aring fylle ut alle celler for &aring f&aring estimert effektbehovet. For informasjon om inndata kan du holde pekeren over sp&oslashrsm&aringlstegnet til h&oslashyre for inndatacellen.
     </p>
     <!--Div containing the inputs -->
     <div class="inputArea">
@@ -44,6 +45,20 @@
         <span class="dataTip" data-tip=  "Finn din kommune for &aring hente DUT og &#229;rsmiddeltemperatur. I tilfellet din kommune ikke er i listen anbefaler vi &aring s&#248;ke med fylket og velge n&#230;rmeste kommune, enten i klima eller geografisk ">
         <img class="icon"src="/Pictures/question.png">
         </span>
+      </p>
+      <p id="aarsmiddelTemp" >
+         <span>&Aringrsmiddeltemperatur</span>
+           <input class="inndata" id="aarsmiddelVerdi" onClick="this.select()">
+           <span class="dataTip" data-tip=  "Denne informasjonen er hentet fra v&#229;r klimadatabase. Dersom lokale forhold avviker fra m&#229;lestasjonen vi har brukt kan temperaturen settes manuelt. ">
+           <img class="icon"src="/Pictures/question.png">
+           </span>
+      </p>
+      <p id="DUT" >
+         <span>Dimensjonerede utetemperatur</span>
+           <input class="inndata" id="DUTverdi" >
+           <span class="dataTip" data-tip=  "Denne informasjonen er hentet fra v&#229;r klimadatabase. Dersom lokale forhold avviker fra m&#229;lestasjonen vi har brukt kan temperaturen settes manuelt. ">
+           <img class="icon"src="/Pictures/question.png">
+           </span>
       </p>
       <p>
         <span> Oppvarmet areal (BRA):</span>
@@ -59,877 +74,100 @@
          <img class="icon"src="/Pictures/question.png">
          </span>
       </p>
-      <p>
-        <span >Tappevann:<br><br>
-         </span>
-         <span>
-           <input type="radio" name="forbruk" value="high"> H&oslashyt<br>
-           <input type="radio" name="forbruk" value="normal"> Normalt<br>
-           <input type="radio" name="forbruk" value="low"> Lavt
-         </span>
-         <span class="dataTip" data-tip=  "Dette brukes for &aring estimere tappevannsbehov.&#10; 'Normal' er for en familie p&aring 4,&#10; 'H&#248;y' er for familie med mye dusjing,&#10; 'Lav' er for 2-3 personer">
-         <img class="icon"src="/Pictures/question.png"><br><br>
-         </span>
-      </p>
-      <p id="historicalEnergyUse" hidden>
-         <span>Historisk energiforbruk per &aringr</span>
-           <input class="inndata" id="historiskForbruk" onClick="this.select()">
-           <span class="dataTip" data-tip=  "Dersom det foreligger eksisterende data p&aring energiforbruk settes dette inn her. Husk at husholdningsgjenstander m&aring trekkes fra hovedm&#229;ler, bruk 60% av total til oppvarming og inkluder ytterligere 10% om tappevann skal dekkes av varmepumpe">
+      <p id="balanseTemp">
+         <span>Balansetemperatur:</span>
+           <input class="inndata" id="balanseTempVerdi" onClick="this.select()">
+           <span class="dataTip" data-tip=  "Balansetemperatur vuderes som funksjon av byggestandard/bygge&#229;r. Denne verdien settes automatisk og er basert p&aring innend&#248;rs temperatur 21 &#176;C. Ved h&#248;yere innend&#248;rs temperatur kan denne parallellforskyves.">
            <img class="icon"src="/Pictures/question.png">
            </span>
       </p>
-      <p id="normForbruk" >
-         <span>Normtall energiforbruk per &aringr</span>
+      <p>
+        <span >Tappevann:<br><br><br>
+         </span>
+         <span>
+           <input type="radio" name="forbruk" value="high"> H&oslashyt<br>
+           <input type="radio" name="forbruk" value="normal" checked="checked"> Normalt<br>
+           <input type="radio" name="forbruk" value="low"> Lavt<br>
+           <input type="radio" name="forbruk" value="none"> Ingenting
+         </span>
+         <span class="dataTip" data-tip=  "Dette brukes for &aring estimere tappevannsbehov.&#10; 'Normal' er for en familie p&aring 4,&#10; 'H&#248;y' er for familie med mye dusjing,&#10; 'Lav' er for 2-3 personer">
+         <img class="icon"src="/Pictures/question.png"><br><br>
+       </span>
+      </p>
+      <p>
+         <span>Historisk energiforbruk per &aringr</span>
+           <input class="inndata" id="historiskForbruk" onClick="this.select()">
+           <span class="dataTip" data-tip=  "Denne verdien brukes for å estimere effektbehov ved DUT. Husk at husholdningsgjenstander m&aring trekkes fra hovedm&#229;ler, bruk 60% av total til oppvarming og inkluder ytterligere 10% om tappevann skal dekkes av varmepumpe">
+           <img class="icon"src="/Pictures/question.png">
+           </span>
+      </p>
+      <p >
+         <span>Normtall energibehov per &aringr</span>
            <span class="resultSpan" id="normtallEnergy">0 kWh</span>
-           <span class="dataTip" data-tip=  "Vi bruker klimasone, byggets alder og areal med normtall. Dette gir en god pekepinn p&#229; forventet energibehov til bygget.">
+           <span class="dataTip" data-tip=  "Vi bruker klimasone, byggets alder og areal med normtall. Dette gir en god pekepinn p&#229; forventet energibehov til bygget. Dersom det ikke foreligger historiske forbruksdata kan denne dataten brukes i stedet. Merk ogs&#229; at det b&#248;r v&#230;re noenlunde samsvar mellom historisk forbruk og forventet forbruk med mindre det er s&#230;rforhold.">
+           <img class="icon"src="/Pictures/question.png">
+           </span>
+      </p>
+      <p>
+         <span>Energibehov tappevann per &aringr</span>
+           <span class="resultSpan" id="tappevannEnergy">0 kWh</span>
+           <span class="dataTip" data-tip=  "Vi trekker ut dette energibehovet fra totalen. Ettersom tappevann er et energibehov som varer hele &#229;ret kan vi ikke regne dette som et utekompensert effektbehov.">
            <img class="icon"src="/Pictures/question.png">
            </span>
       </p>
     </div>
     <div class="outputArea">
       <p class="newSection">
-      her kommer all utdata, men det vil ogsaa vaere mulig aa legge inn historisk forbruk
+      UTDATA
       </p>
-      <p id="aarsmiddelTemp" hidden>
+      <p>
+        <br>
+         <span>Kommune</span>
+           <span class="resultSpan" id="municipalityUtdata"></span>
+      </p>
+      <p>
          <span>&Aringrsmiddeltemperatur</span>
-           <input class="inndata" id="aarsmiddelVerdi" onClick="this.select()" >
-           <span class="dataTip" data-tip=  "Denne informasjonen er hentet fra v&#229;r klimadatabase. Dersom lokale forhold avviker fra m&#229;lestasjonen vi har brukt kan temperaturen settes manuelt. ">
-           <img class="icon"src="/Pictures/question.png">
-           </span>
+           <span class="resultSpan" id="aarsmiddelTempUtdata"></span>
       </p>
-      <p id="DUT" hidden>
+      <p>
          <span>Dimensjonerede utetemperatur</span>
-           <input class="inndata" id="DUTverdi" >
-           <span class="dataTip" data-tip=  "Denne informasjonen er hentet fra v&#229;r klimadatabase. Dersom lokale forhold avviker fra m&#229;lestasjonen vi har brukt kan temperaturen settes manuelt. ">
-           <img class="icon"src="/Pictures/question.png">
-           </span>
+           <span class="resultSpan"id="DUTutdata"></span>
       </p>
       <p id="balanseTemp">
-         <span>Balansetemperatur:</span>
-           <input class="inndata" id="balanseTempVerdi" onClick="this.select()">
-           <span class="dataTip" data-tip=  "Balansetemperatur vuderes som funksjon av byggestandard/bygge&#229;r.  ">
-           <img class="icon"src="/Pictures/question.png">
-           </span>
+         <span>Balansetemperatur</span>
+           <span class="resultSpan"id="balanseTempVerdiUtdata"></span>
       </p>
-      <p id="effektBehov">
-         <span>Effektbehov ved DUT:</span>
-           <span id="effektBehovVerdi" style="text-align: center;">0 kW </span>
+      <p>
+         <span>&Aringrlig energibehov</span>
+           <span class="resultSpan" id="energibehovUtdata">0 kWh </span>
+      </p>
+      <p>
+         <span>Effektbehov ved DUT</span>
+           <span class="resultSpan" id="effektBehovUtdata">0 kW </span>
            <span class="dataTip" data-tip=  "Effektbehovet vurderes fra inndata ovenfor.  ">
            <img class="icon"src="/Pictures/question.png">
            </span>
       </p>
     </div>
   </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <div class="navigationTab">
-      <div class="wizardTab" id="wizard">
-        <button type="button" class="wizardButton wizardStart">Start veileder</button>
-        <div id="wizardStep1" hidden>
-          <button type="button" class="wizardButton wizardButtonStep1 wizardHarEffekt">Jeg har effektbehovet</button>
-          <button type="button" class="wizardButton wizardButtonStep1 wizardHarIkkeEffekt">Jeg har ikke effektbehov</button>
-        </div>
-        <div id="wizardStep2" hidden>
-          <button type="button" class="wizardButton wizardButtonStep2 wizardHarArealUverdi">Jeg har U-verdier og arealer</button>
-          <button type="button" class="wizardButton wizardButtonStep2 wizardHarForbruk">Jeg har historisk forbruk</button>
-          <button type="button" class="wizardButton wizardButtonStep2 wizardHarIkkeInfo">Jeg har ikke forbruksinformasjon</button>
-        </div>
-        <div id="wizardStep3" hidden>
-          <button type="button" class="wizardButton wizardButtonStep3 wizardNybygg">Nybygg</button>
-          <button type="button" class="wizardButton wizardButtonStep3 wizardEksisterende">Eksisterende bygg</button>
-        </div>
-      </div>
-      <div class="navTitles">
-        <span class="navItemTittel navItemTittel0"></span>
-        <span class="navItemTittel navItemTittel1">Estimer energibehov</span>
-        <span class="navItemTittel navItemTittel01"></span>
-        <span class="navItemTittel navItemTittel2">Estimer effektbehov</span>
-      </div>
-      <span class="navItem" id="navItem1ID"><button class="navButton navButton1" id="navItem1">Hjem</button></span>
-      <span class="navItem" id="navItem2ID" ><button class="navButton navButton2" id="navItem2">Normtall</button></span>
-      <span class="navItem" id="navItem2ID" ><button class="navButton navButton3" id="navItem3">TEK10/TEK15</button></span>
-      <span class="navItem" id="navItem2ID" ><button class="navButton navButton5" id="navItem5">Fra energibehov</button></span>
-      <span class="navItem" id="navItem4ID"><button class="navButton navButton6" id="navItem6">Simulering</button></span>
-      <span class="navItem" id="navItem6ID"><button class="navButton navButton9" id="navItem9">Veileder</button></span>
-    </div>
-
-
-    <section class="estimationSection">
-      <div id="hideShowButtonDiV" hidden>
-
-          <!--original clss: effectEnergyInfoArea-->
-          <button  type="button" class="menuButtons effectEnergyInfoEmpirical" id="empiricalCalcButton">
-            <div class="image">
-              <img class="buttonImage" src="/Pictures/normtall.png" height="200px" width="330px"/>
-              <h3 id="effectEnergyInfoEmpiricalText"><span>Estimer energibehov fra:<br /> Normtall basert p&aring<br /> -Klimasone<br /> -Alder<br />-Byggtype<br />-Areal</span></h3>
-            </div>
-            <div class="buttonText" id="effectEnergyInfoEmpiricalDivText">
-                Energi fra normtall
-            </div>
-          </button>
-
-          <span class="buttonSpaceSpan" id="spacerForButtons1"></span>
-
-          <button  type="button" class="menuButtons effectEnergyInfoRegulation" id="regulationCalcButton">
-            <div class="image">
-              <img class="buttonImage" src="/Pictures/forskrifter.png" height="200px" width="330px"/>
-              <h3 id="effectEnergyInfoRegulationText"><span>Estimer energibehov fra:<br /> -TEK10 eller TEK15<br /> -Klimasone<br /> -Bygningskategori<br /> -Areal</span></h3>
-            </div>
-            <div class="buttonText" id="effectEnergyInfoRegulationDivText">
-                Energi fra forskrifter
-            </div>
-          </button>
-
-          <span class="buttonSpaceSpan" id="spacerForButtons2"></span>
-
-          <button  type="button" class="menuButtons effectEnergyInfoArea" id="effectAreaUvalueCalcButton">
-            <div class="image">
-              <img class="buttonImage" src="/Pictures/plantegning.png" height="200px" width="330px"/>
-              <h3 id="effectEnergyInfoAreaText"><span>Estimer effektbehov fra:<br /> -Areal<br />-U-verdier<br />-Temperatur<br /> -Luftmengde<br />-Lekkasjetall</span></h3>
-            </div>
-            <div class="buttonText" id="effectEnergyInfoAreaDivText">
-                Effekt fra areal og U-verdier
-            </div>
-          </button>
-
-          <span class="inactiveButtonSpaceSpan" id="spacerForButtons3"></span>
-
-          <button  type="button" class="menuButtons effectFromEnergy" id="effectFromNRGCalcButton">
-            <div class="image">
-              <img class="buttonImage" src="/Pictures/forbruk.png" height="200px" width="330px"/>
-              <h3 id="effectFromEnergyText"><span>Estimer effektbehov fra:<br /> Historisk energibehov</span></h3>
-            </div>
-            <div class="buttonText" id="effectFromEnergyDivText">
-                Effekt fra energibehov
-            </div>
-          </button>
-
-          <span class="buttonSpaceSpan" id="spacerForButtons4"></span>
-
-          <button  type="button" class="menuButtons energyCalculation" id="energyCalcButton">
-            <div class="image">
-              <img class="buttonImage" src="/Pictures/varighetskurve.png" height="200px" width="330px"/>
-              <h3 id="energyCalculationText"><span>Bruk effektbehov for &aring:<br />-Velge varmepumpe<br />-Estimere energidekningsgrad<br />-Estimere SCOP<br />-Estimere besparelse</span></h3>
-            </div>
-            <div class="buttonText" id="energyCalculationDivText">
-                Energiberegning
-            </div>
-          </button>
-
-      </div>
-      <div id="selectedTabDiv" hidden>
-        <div class="preNextNavClass"id="prevNextNav" hidden>
-          <button type="button" class="menuButtons menuButtonsPrev">
-            <p class="inputP" id="pic">
-              <p class="inputCell inputCellMiddle" id="previous"></span></p>
-            </p>
-            <p class="inputP" id="picText">
-              <p class="inputCell inputCellLeft" id="menuDescriptionPrevious"></p>
-            </p>
-          </button>
-          <button type="button" class="centerObject">
-            <p class="inputP" id="pic">
-              <p class="inputCell" id="current"></span></p>
-            </p>
-            <p class="inputP" id="picText">
-              <p class="inputCell inputCellLeft" id="menuDescriptionCurrent"></p>
-            </p>
-          </button>
-          <button type="button" class="menuButtons menuButtonsNext">
-            <p class="inputP" id="pic">
-              <p class="inputCell inputCellMiddle" id="next"></span></p>
-            </p>
-            <p class="inputP" id="picText">
-              <p class="inputCell inputCellLeft" id="menuDescriptionNext"></p>
-            </p>
-        </button>
-        </br></br>
-        </div>
-      <div id="uValueEffect" hidden>
-        <section class="form-row">
-          <p class="inputP">
-            <label class="inputLabeleffectCalculation" id="effectCalcStandard">Velg standard</label>
-            <label class="inputLabeleffectCalculation"id="effectCalcIndoortemp">Innend&oslashrs temperatur</label>
-            <label class="inputLabeleffectCalculation"id="effectCalcDOT">DUT</label>
-            <label class="inputLabeleffectCalculation"id="effectCalcMunicipality">Kommune (autofyll DUT)</label>
-            <label class="inputLabeleffectCalculation" style="text-align: right;"><button class="printButton printButton2"><p class="imgDescription">Print</p><img src="/Pictures/print_icon1.GIF"/></button></label>
-          </p>
-          <p class="inputP">
-            <span class="inputAreaFormSpan"><input class="inputMenuTopEffectCalculation" id="buildingStandard2" onClick="this.select()" type="text" placeholder="f.eks TEK10 eller 2010"></span>
-            <span class="inputAreaFormSpan"><input class="inputMenuTopEffectCalculation" id="indoorTemp" onClick="this.select()" type="number" value="21" placeholder="21" style="text-align: right;"></span>
-            <span class="inputAreaFormSpan"><input class="inputMenuTopEffectCalculation" id="outdoorTemp" onClick="this.select()" type="number" value="-14" placeholder="-14" style="text-align: right;"></span>
-            <span class="inputAreaFormSpan"><input class="inputMenuTopEffectCalculation" id="areaEffectMunicipality" onClick="this.select()" type="text" placeholder="Molde" ></span>
-            <span class="inputAreaFormSpan"></span>
-          </p>
-
-          <form>
-            <p class="effectCalculationFormLineHeading">
-              <label class="effectCalculationOverskriftVenstre" id="effectCalcColumnTitle1">Hva</label>
-              <label class="effectCalculationOverskriftMidt" id="effectCalcColumnTitle2">Areal</label>
-              <label class="effectCalcKnappTopp"></label>
-              <label class="effectCalculationOverskriftMidt" id="effectCalcColumnTitle3">U-verdi</label>
-              <label class="effectCalcKnappTopp"></label>
-              <label class="effectCalculationOverskriftMidt" id="effectCalcColumnTitle4">T<span style="vertical-align: sub; font-size: 12px;">inne</span></label>
-              <label class="effectCalculationOverskriftMidt" id="effectCalcColumnTitle5">T<span style="vertical-align: sub; font-size: 12px;">ute</span></label>
-              <label class="effectCalcOverskriftHoyre" id="effectCalcColumnTitle6">Effektbehov</label>
-              <label class="effectCalculationFillerRight"></label>
-            </p>
-            <p class="effectCalculationFormLine1">
-              <label class="effectKategori" id="effectCalcRowTitle1">Fasade </label>
-              <input onClick="this.select()" type="number" value="0" min="0" class="inputAreaFormEffectCalculation" id="facadeArea"></input>
-              <label class="effectCalcKnapp"><button type="button" class="incrementDown incrementDown1" tabindex="500">-</button></label>
-              <label class="effectCalculationSpesifikkVerdi" id="uValueFacade">0.22</label>
-              <label class="effectCalcKnapp"><button type="button" class="incrementUp incrementUp1"tabindex="501">+</button></label>
-              <label class="effectCalculationSpesifikkVerdi" id="indoorTemp1">21</label>
-              <label class="effectCalculationSpesifikkVerdi" id="outdoorTemp1">-14</label>
-              <label class="effectCalcVerdiHoyre" style="text-align: right" id="estimatedEffectFacade">0 kW</label>
-              <label class="effectCalculationFillerRight"></label>
-            </p>
-            <p class="effectCalculationFormLine2">
-              <label class="effectKategori" id="effectCalcRowTitle2">Gulv p&aring grunn </label>
-              <input onClick="this.select()" type="number" value="0" min="0" class="inputAreaFormEffectCalculation" id="floorArea"></input>
-              <label class="effectCalcKnapp"><button type="button" class="incrementDown incrementDown2" tabindex="502">-</button></label>
-              <label class="effectCalculationSpesifikkVerdi" id="uValueFloor">0.18</label>
-              <label class="effectCalcKnapp"><button type="button" class="incrementUp incrementUp2" tabindex="503">+</button></label>
-              <label class="effectCalculationSpesifikkVerdi" id="indoorTemp2">21</label>
-              <label class="effectCalculationSpesifikkVerdi" id="groundTemp">-5</label>
-              <label class="effectCalcVerdiHoyre" style="text-align: right" id="estimatedEffectFloor">0 kW</label>
-              <label class="effectCalculationFillerRight"></label>
-            </p>
-            <p class="effectCalculationFormLine1">
-              <label class="effectKategori" id="effectCalcRowTitl31">Tak </label>
-              <input onClick="this.select()" type="number" value="0" min="0" class="inputAreaFormEffectCalculation" id="ceilingArea"></input>
-              <label class="effectCalcKnapp"><button type="button" class="incrementDown incrementDown3" tabindex="504">-</button></label>
-              <label class="effectCalculationSpesifikkVerdi" id="uValueCeiling">0.18</label>
-              <label class="effectCalcKnapp"><button type="button" class="incrementUp incrementUp3" tabindex="505">+</button></label>
-              <label class="effectCalculationSpesifikkVerdi" id="indoorTemp3">21</label>
-              <label class="effectCalculationSpesifikkVerdi" id="outdoorTemp2">-14</label>
-              <label class="effectCalcVerdiHoyre" style="text-align: right" id="estimatedEffectCeiling">0 kW</label>
-              <label class="effectCalculationFillerRight"></label>
-            </p>
-            <p class="effectCalculationFormLine2">
-              <label class="effectKategori" id="effectCalcRowTitle4">Vindu og d&oslashrer </label>
-              <input onClick="this.select()" type="number" value="0" min="0" class="inputAreaFormEffectCalculation" id="windowArea"></input>
-              <label class="effectCalcKnapp"><button type="button" class="incrementDown incrementDown4" tabindex="506">-</button></label>
-              <label class="effectCalculationSpesifikkVerdi" id="uValueWindow">1.6</label>
-              <label class="effectCalcKnapp"><button type="button" class="incrementUp incrementUp4" tabindex="507">+</button></label>
-              <label class="effectCalculationSpesifikkVerdi" id="indoorTemp4">21</label>
-              <label class="effectCalculationSpesifikkVerdi" id="outdoorTemp3">-14</label>
-              <label class="effectCalcVerdiHoyre" id="estimatedEffectWindow">0 kW</label>
-              <label class="effectCalculationFillerRight"></label>
-            </p>
-            <p class="effectCalculationFormLine1">
-              <label class="effectCalculationOverskriftVenstre">SUM</label>
-              <label class="effectCalculationSpesifikkVerdi" ></label>
-              <label class="effectCalcKnapp"></label>
-              <label class="effectCalculationSpesifikkVerdi" ></label>
-              <label class="effectCalcKnapp"></label>
-              <label class="effectCalculationSpesifikkVerdi" ></label>
-              <label class="effectCalculationSpesifikkVerdi" ></label>
-              <label class="effectCalcVerdiHoyre" style="font-weight:bold;" id="sumEffectsUValueAndArea">0 kW</label>
-              <label class="effectCalculationFillerRight"></label>
-            </p>
-            <p class="effectCalculationFormLine2">
-              <label class="effectCalculationOverskriftVenstre" ></label>
-              <label class="effectCalculationOverskriftMidt" id="effectCalcRowTitle5">Gjenvinner[%]</label>
-              <label class="effectCalcKnapp"></label>
-              <label class="effectCalculationOverskriftMidt" id="effectCalcRowTitle6">Luft[m&sup3/h]</label>
-              <label class="effectCalcKnapp"></label>
-              <label class="effectCalculationOverskriftMidt" id="effectCalcRowTitle7">T<span style="vertical-align: sub; font-size: 12px;">inne</span></label>
-              <label class="effectCalculationOverskriftMidt" id="effectCalcRowTitle8">T<span style="vertical-align: sub; font-size: 12px;">etter gjenvinner</span></label>
-              <label class="effectCalcOverskriftHoyre" id="effectCalcRowTitle9">Effektbehov</label>
-              <label class="effectCalculationFillerRight"></label>
-            </p>
-            <p class="effectCalculationFormLine1">
-              <label class="effectKategori" id="effectCalcRowTitle10">Ventilasjon</label>
-              <span class="inputAreaFormSpan"><input onClick="this.select()" type="number" value="70" min="0" max="100" class="inputAreaFormEffectCalculation" id="thermalWheel"></input></span>
-              <label class="effectCalcKnapp"></label>
-              <span class="inputAreaFormSpan"><input onClick="this.select()" type="number" value="0" min="0" class="inputAreaFormEffectCalculation" id="ventilationFlow"></span>
-              <label class="effectCalcKnapp"></label>
-              <label class="effectCalculationSpesifikkVerdi" id="indoorTemp5">21</label>
-              <label class="effectCalculationSpesifikkVerdi" id="tempEfterThermal">8.7</label>
-              <label class="effectCalcVerdiHoyre" id="ventilationEffectHP">0 kW</label>
-              <label class="effectCalculationFillerRight"></label>
-            </p>
-            <p class="effectCalculationFormLine2">
-              <label class="effectCalculationOverskriftVenstre" ></label>
-              <label class="effectCalculationOverskriftMidt" id="effectCalcRowTitle11">Volum</label>
-              <label class="effectCalcKnapp"></label>
-              <label class="effectCalculationOverskriftMidt" id="effectCalcRowTitle12">Lekkasjetall</label>
-              <label class="effectCalcKnapp"></label>
-              <label class="effectCalculationOverskriftMidt" id="effectCalcRowTitle13">Luftskifter/t</sub></label>
-              <label class="effectCalculationOverskriftMidt" ></label>
-              <label class="effectCalcOverskriftHoyre" ></label>
-              <label class="effectCalculationFillerRight"></label>
-            </p>
-            <p class="effectCalculationFormLine1">
-              <label class="effectKategori" id="effectCalcRowTitle14">Infiltrasjon</label>
-              <input onClick="this.select()" type="number" value="0" min="0" class="inputAreaFormEffectCalculation" id="infiltration" ></input>
-              <label class="effectCalcKnapp"><button type="button" class="incrementDown incrementDown5" tabindex="508">-</button></label>
-              <label class="effectCalculationSpesifikkVerdi" id="infiltrationNumber">3</label>
-              <label class="effectCalcKnapp"><button type="button" class="incrementUp incrementUp5" tabindex="509">+</button></label>
-              <label class="effectCalculationSpesifikkVerdi" id="airChanges">0.21</label>
-              <label class="effectCalculationSpesifikkVerdi"></label>
-              <label class="effectCalcVerdiHoyre" id="infiltrationEffect">0 kW</label>
-              <label class="effectCalculationFillerRight"></label>
-            </p>
-            <p class="effectCalculationFormLine2">
-              <label class="effectCalculationOverskriftVenstre" id="effectCalcRowTitle15">SUM OPPVARMING </label>
-              <label class="effectCalculationSpesifikkVerdi" ></label>
-              <label class="effectCalcKnapp"></label>
-              <label class="effectCalculationSpesifikkVerdi" ></label>
-              <label class="effectCalcKnapp"></label>
-              <label class="effectCalculationSpesifikkVerdi" ></label>
-              <label class="effectCalculationSpesifikkVerdi" ></label>
-              <label class="effectCalcVerdiHoyre" style="font-weight:bold;" id="sumHeatingPostsEffect">0 kW</label>
-              <label class="effectCalculationFillerRight"></label>
-            </p>
-          </form>
-        </section>
-      </div>
-
-      <div id="effectFromEnergyNeed" hidden>
-        <section class="form-row">
-          <p class="inputP">
-            <label class="inputLabelEffectFromEnergy" id="effectFromEnergyTextMunicipality">Kommune</label>
-            <label class="inputLabelEffectFromEnergy" id="effectFromEnergyTextHeatingFrom">Varmebehov fra T<span style="vertical-align: sub; font-size: 12px;">ute</span></label>
-            <label class="inputLabelEffectFromEnergy" id="effectFromEnergyTextEnergy">Romoppvarmingsbehov</label>
-            <label class="inputLabelEffectFromEnergy" id="effectFromEnergyTextBuildYear">Bygge&aringr</label>
-          </p>
-          <p class="inputP">
-            <span class="inputAreaFormSpan"><input class="inputMenuEffectFromEnergy" id="effectFromEnergyMunicipality" onClick="this.select()" type="text" placeholder="Molde"></span>
-            <span class="inputAreaFormSpan"><input class="inputMenuEffectFromEnergy" id="effectFromEnergyRoomHeatingFrom" onClick="this.select()" type="number" placeholder="12" style="text-align: right;"></span>
-            <span class="inputAreaFormSpan"><input class="inputMenuEffectFromEnergy" id="effectFromEnergyYearlyEnergyNeed" onClick="this.select()" type="number" placeholder="Legg inn energiforbruk" style="text-align: right;"></span>
-            <span class="inputAreaFormSpan"><input class="inputMenuEffectFromEnergy" id="effectFromEnergyBuildYear" onClick="this.select()" type="number" placeholder="1980" style="text-align: right;"></span>
-          </p>
-        </section>
-        <div class="resultLineEffectFromEnergy">
-          <span class="outputLabelEffectFromEnergy" id="effectFromEnergyTextResult">Estimert effektbehov ved DUT:</span>
-          <span class="outputValueEffectFromEnergy" id="effecFromEnergyValue">0</span>
-          <span class="unitEffectFromEnergy"> kW</span>
-        </div>
-      </div>
-
-      <div id="historicalEnergyUse" hidden>
-        <section class="form-row">
-          <p class="inputP">
-            <label class="inputLabelHistorical" id="normtallBuildingYearText">Bygge&aringr</label>
-            <label class="inputLabelHistorical" id="normtallMunicipalityText">Kommune</label>
-            <label class="inputLabelHistorical" id="normtallBRAText">Oppvarmet areal</label>
-            <label class="inputLabelHistorical">Estimert andel tappevann</label>
-          </p>
-          <p class="inputP">
-            <span class="inputAreaFormSpan"><input class="inputMenuTopHistorical" id="buildingYearHistoricalEnergy" onClick="this.select()" type="text" placeholder="1970"></span>
-            <span class="inputAreaFormSpan"><input class="inputMenuTopHistorical" id="municipalityHistoricalEnergy" onClick="this.select()" type="text" placeholder="Molde" ></span>
-            <span class="inputAreaFormSpan"><input class="inputMenuTopHistorical" id="buildingBRAHistoricalEnergy" onClick="this.select()" type="number" placeholder="220" style="text-align: right;"></span>
-            <span class="inputAreaFormSpan" style="text-align: right;" id="buildingHotWaterHistoricalEnergy">0 kWh</span>
-          </p>
-
-            <p class="normtallFormLineHeading">
-              <label class="normtallFillerLeft" ></label>
-              <label class="normtallOverskriftVenstre" id="normtallBuildingPeriodText">Bygge&aringr: </label>
-              <label class="normtallOverskriftMidt" id="normtallYearMeanText">&aringrsmiddeltemp:</label>
-              <label class="normtallOverskriftHoyre" id="normtallEnergyNeedText1">Energibehov total</label>
-              <label class="normtallFillerRight" ></label>
-            </p>
-            <p class="normtallFormLineHeading">
-              <label class="normtallFillerLeft" ></label>
-              <label class="normtallOverskriftVenstre" id="byggeperiode">1966 - 1975 </label>
-              <label class="normtallOverskriftMidt" id="arsmiddeltemp">>= 7</label>
-              <label class="normtallOverskriftHoyre" id="normtallEnergyNeedText2">oppvarming og tappevann</label>
-              <label class="normtallFillerRight" ></label>
-            </p>
-          <form>
-            <p class="historicalFormLine">
-              <label class="normtallFillerLeft" ></label>
-              <label class="normtallskjemakategori" style="font-weight: bold;" id="normtallColumnTitle1">Beskrivelse</label>
-              <label class="normtallskjemabilde" style="font-weight: bold;" id="normtallColumnTitle2">Byggtype</label>
-              <label class="normtallskjemaVillaverdi" style="font-weight: bold;" id="normtallColumnTitle3">Villa</label>
-              <label class="normtallskjemaRekkeverdi" style="font-weight: bold;" id="normtallColumnTitle4">Rekkehus</label>
-              <label class="normtallFillerRight" ></label>
-            </p>
-            <p class="historicalFormLine">
-              <label class="normtallFillerLeft" ></label>
-              <label class="normtallskjemakategori" id="normtallRowTitle1">1 etasje uten kjeller</label>
-              <label class="normtallskjemabilde"><img src="/Pictures/bilde1.jpg"/></label>
-              <label class="normtallskjemaVillaverdi" id="villa1">0 kWh</label>
-              <label class="normtallskjemaRekkeverdi" id="rekke1">0 kWh</label>
-              <label class="normtallFillerRight" ></label>
-            </p>
-            <p class="historicalFormLine">
-              <label class="normtallFillerLeft" ></label>
-              <label class="normtallskjemakategori" id="normtallRowTitle2">1 etasje med kjeller</label>
-              <label class="normtallskjemabilde"><img src="/Pictures/bilde2.jpg"/></label>
-              <label class="normtallskjemaVillaverdi" id="villa2">0 kWh</label>
-              <label class="normtallskjemaRekkeverdi" id="rekke2">0 kWh</label>
-              <label class="normtallFillerRight" ></label>
-            </p>
-            <p class="historicalFormLine">
-              <label class="normtallFillerLeft" ></label>
-              <label class="normtallskjemakategori" id="normtallRowTitle3">1 etasje med loft</label>
-              <label class="normtallskjemabilde"><img src="/Pictures/bilde3.jpg"/></label>
-              <label class="normtallskjemaVillaverdi" id="villa3">0 kWh</label>
-              <label class="normtallskjemaRekkeverdi" id="rekke3">0 kWh</label>
-              <label class="normtallFillerRight" ></label>
-            </p>
-            <p class="historicalFormLine">
-              <label class="normtallFillerLeft" ></label>
-              <label class="normtallskjemakategori" id="normtallRowTitle4">1 etasje med kjeller, innredet sokkel eller loft</label>
-              <label class="normtallskjemabilde"><img src="/Pictures/bilde4.jpg"/></label>
-              <label class="normtallskjemaVillaverdi" id="villa4">0 kWh</label>
-              <label class="normtallskjemaRekkeverdi" id="rekke4">0 kWh</label>
-              <label class="normtallFillerRight" ></label>
-            </p>
-            <p class="historicalFormLine">
-              <label class="normtallFillerLeft" ></label>
-              <label class="normtallskjemakategori" id="normtallRowTitle5">2 etasjer uten kjeller</label>
-              <label class="normtallskjemabilde"><img src="/Pictures/bilde5.jpg"/></label>
-              <label class="normtallskjemaVillaverdi" id="villa5">0 kWh</label>
-              <label class="normtallskjemaRekkeverdi" id="rekke5">0 kWh</label>
-              <label class="normtallFillerRight" ></label>
-            </p>
-            <p class="historicalFormLine">
-              <label class="normtallFillerLeft" ></label>
-              <label class="normtallskjemakategori" id="normtallRowTitle6">2 etasjer med kjeller</label>
-              <label class="normtallskjemabilde"><img src="/Pictures/bilde6.jpg"/></label>
-              <label class="normtallskjemaVillaverdi" id="villa6">0 kWh</label>
-              <label class="normtallskjemaRekkeverdi" id="rekke6">0 kWh</label>
-              <label class="normtallFillerRight" ></label>
-            </p>
-            <p class="historicalFormLine">
-              <label class="normtallFillerLeft" ></label>
-              <label class="normtallskjemakategori" id="normtallRowTitle7">2 etasjer med loft</label>
-              <label class="normtallskjemabilde"><img src="/Pictures/bilde7.jpg"/></label>
-              <label class="normtallskjemaVillaverdi" id="villa7">0 kWh</label>
-              <label class="normtallskjemaRekkeverdi" id="rekke7">0 kWh</label>
-              <label class="normtallFillerRight" ></label>
-            </p>
-            <p class="historicalFormLine">
-              <label class="normtallFillerLeft" ></label>
-              <label class="normtallskjemakategori" id="normtallRowTitle8">2 etasjer med kjeller, innredet sokkel eller loft</label>
-              <label class="normtallskjemabilde"><img src="/Pictures/bilde8.jpg"/></label>
-              <label class="normtallskjemaVillaverdi" id="villa8">0 kWh</label>
-              <label class="normtallskjemaRekkeverdi" id="rekke8">0 kWh</label>
-              <label class="normtallFillerRight" ></label>
-            </p>
-          </form>
-        </section>
-      </div>
-
-      <div id="regulationEnergyLimit" hidden>
-        <section class="form-row">
-          <p class="inputP">
-            <label class="inputLabelRegulation" id="regulationBuildingStandardText">Byggestandard</label>
-            <label class="inputLabelRegulation" id="regulationMunicipalityText">Kommune</label>
-            <label class="inputLabelRegulation" id="regulationBuildingCategoryText">Bygningskategori</label>
-            <label class="inputLabelRegulation" id="regulationBRAText">BRA</label>
-          </p>
-          <p class="inputP">
-            <span class="inputAreaFormSpan"><input class="inputMenuTopRegulation" id="standardEffectEnergyInfoRegulation" onClick="this.select()" type="text" placeholder="TEK10 or TEK15"></span>
-            <span class="inputAreaFormSpan"><input class="inputMenuTopRegulation" id="municipalityEffectEnergyInfoRegulation" onClick="this.select()" type="text" placeholder="Molde / etc.." ></span>
-            <span class="inputAreaFormSpan"><input class="inputMenuTopRegulation" id="buildingCategoryEffectEnergyInfoRegulation" onClick="this.select()" type="text" placeholder="Boligblokk / etc.." ></span>
-            <span class="inputAreaFormSpan"><input class="inputMenuTopRegulation" id="buildingBRAEffectEnergyInfoRegulation" onClick="this.select()" type="number" placeholder="200" style="text-align: right;"></span>
-          </p>
-          <form>
-            <p class="regulationFormLineHeading">
-              <label class="kategoriOverskriftVenstre" id="regulationRowText1">Energiposter</label>
-              <label class="kategoriOverskriftMidt" ><span class="frac"><sup>kWh</sup><span>/</span><sub>m&sup2&aringr</sub></span></label>
-              <label class="kategoriOverskriftMidt" ><span class="frac"><sup>kWh</sup><span>/</span><sub>&aringr</sub></span></label>
-            </p>
-            <p class="regulationFormLine1">
-              <label class="kategori" id="regulationRowText2">Romoppvarming </label>
-              <label class="kategoriSpesifikkVerdi" id="roomHeatSpecific" type="number">0</label>
-              <label class="kategoriSpesifikkVerdi" id="roomHeatTotal">0</label>
-            </p>
-            <p class="regulationFormLine2">
-              <label class="kategori" id="regulationRowText3">Ventilasjonsvarme </label>
-              <label class="kategoriSpesifikkVerdi" id="ventilationHeatSpecific">0</label>
-              <label class="kategoriSpesifikkVerdi" id="ventilationHeatTotal">0</label>
-            </p>
-            <p class="regulationFormLine1">
-              <label class="kategori" id="regulationRowText4">Varmtvann </label>
-              <label class="kategoriSpesifikkVerdi" id="hotWaterHeatSpecific" type="number">0</label>
-              <label class="kategoriSpesifikkVerdi" id="hotWaterHeatTotal">0</label>
-            </p>
-            <p class="regulationFormLine2">
-              <label class="kategoriOverskriftVenstre" id="regulationRowText5">SUM OPPVARMING </label>
-              <label class="kategoriSpesifikkVerdi" style="font-weight:bold;" id="sumHeatingPostsSpecific">0</label>
-              <label class="kategoriSpesifikkVerdi" style="font-weight:bold;" id="sumHeatingPostsTotal">0</label>
-            </p>
-            <p class="regulationFormLine1">
-              <label class="kategori" id="regulationRowText6">Vifter og pumper </label>
-              <label class="kategoriSpesifikkVerdi" id="fansAndPumpsSpecific">0</label>
-              <label class="kategoriSpesifikkVerdi" id="fansAndPumpsTotal">0</label>
-            </p>
-            <p class="regulationFormLine2">
-              <label class="kategori" id="regulationRowText7">Belysning </label>
-              <label class="kategoriSpesifikkVerdi" id="lightingSpecific" type="number" value="10">0</label>
-              <label class="kategoriSpesifikkVerdi" id="lightingTotal">0</label>
-            </p>
-            <p class="regulationFormLine1">
-              <label class="kategori" id="regulationRowText8">Teknisk utstyr </label>
-              <label class="kategoriSpesifikkVerdi" id="technicalEquipmentSpecific">0</label>
-              <label class="kategoriSpesifikkVerdi" id="technicalEquipmentTotal">0</label>
-            </p>
-            <p class="regulationFormLine2">
-              <label class="kategori" id="regulationRowText9">Kj&oslashling </label>
-              <label class="kategoriSpesifikkVerdi" id="coolingSpecific">0</label>
-              <label class="kategoriSpesifikkVerdi" id="coolingTotal">0</label>
-            </p>
-            <p class="regulationFormLine1">
-              <label class="kategoriOverskriftVenstre" id="regulationRowText10">Energiramme </label>
-              <label class="kategoriSpesifikkVerdi" style="font-weight:bold;" id="energyRegulationsSpecific">0</label>
-              <label class="kategoriSpesifikkVerdi" style="font-weight:bold;" id="energyRegulationsTotal">0</label>
-            </p>
-          </form>
-        </section>
-      </div>
-
-
-    </section>
-
-    <div id="inputSection" hidden>
-      <!-- INPUT AREA OF SITE -->
-      <div class="inputForCalculationLeft">
-
-      <section id="beregningsInfo">
-        <div class="tittel" id="requiredInformationText">N&oslashdvendig informasjon</div>
-        <!-- input for municipality etc-->
-        <section class="form-row">
-          <!-- input for BRA etc-->
-          <form>
-            <p class="inputP">
-              <label class="inputLabel" id="inputRowText1">Addresse eller prosjektnavn: </label>
-              <input class="inputMenuText" id="address" onClick="this.select()" type="text" placeholder="My street 2" ng-model="name">
-            </p>
-            <p class="inputP">
-              <label class="inputLabel" id="inputRowText2">Kommune: </label>
-              <input class="inputMenuText" id="municipality" onClick="this.select()" type="text" placeholder="Molde">
-            </p>
-            <p class="inputP">
-              <label class="inputLabel" id="inputRowText3">Bygningsstandard: </label>
-              <input class="inputMenuText" id="buildingStandard" onClick="this.select()" type="text" placeholder="TEK10 / 2012">
-            </p>
-            <p class="inputP">
-              <label class="inputLabel" id="inputRowText4">Bygningskategori: </label>
-              <input class="inputMenuText" id="buildingCategory" onClick="this.select()" type="text" placeholder="Boligblokk">
-            </p>
-            <p class="inputP">
-              <label class="inputLabel" id="inputRowText5">Bygge&aringr: </label>
-              <input class="inputMenu" id="buildingYear" onClick="this.select()" type="number" placeholder="2015" ng-model="buildYear">
-            </p>
-            <p class="inputP">
-              <label class="inputLabel" id="inputRowText6">Oppvarmet areal (BRA): </label>
-              <input class="inputMenu" id="buildingBRA" onClick="this.select()" type="number" placeholder="200" ng-model="area">
-            </p>
-            <p class="inputP">
-              <label class="inputLabel" id="inputRowText7">Innend&oslashrs temperatur: </label>
-              <input class="inputMenu" id="tempIndoor"onClick="this.select()" type="number" placeholder="21" ng-model="indoorTemperaure">
-            </p>
-            <p class="inputP">
-              <label class="inputLabel" id="inputRowText8">Effektbehov ved DUT: </label>
-              <input class="inputMenu" id="buildingEffectNeed" onClick="this.select()" type="number" placeholder="6" ng-model="effect">
-            </p>
-            <p class="inputP">
-              <label class="inputLabel" id="inputRowText9">Varmebehov fra T<span style="vertical-align: sub; font-size: 12px;">ute</span>:</label>
-              <input class="inputMenu" id="buildingHeatingFrom" onClick="this.select()" type="number" placeholder="12" ng-model="heatFromOutTemp">
-            </p>
-            <p class="inputP">
-              <label class="inputLabel" id="inputRowText10">&Aringrsmiddeltemperatur</label>
-              <input class="inputMenu" id="yearMeanForCalculation" onClick="this.select()" type="number" placeholder="6">
-            </p>
-            <p class="inputP">
-              <label class="inputLabel" id="inputRowText11">Dimensjonerende utetemperatur </label>
-              <input class="inputMenu" id="dOTForCalculation" onClick="this.select()" type="number" placeholder="-20">
-            </p>
-            <p class="inputP">
-              <label class="inputLabel" id="inputRowText12">Velg maskintype og antall: </label>
-              <select class="inputSelect1" id="numberOfMachines">
-                <option>1</option>
-              </select>
-              <select class="inputSelect2" id="machines">
-                <option>Loading...</option>
-              </select>
-            </p>
-          </form>
-        </section>
-      </section>
-      <section class="form-row" id="genDiagramSeksjon">
-        <p><strong id="generateEffectCalculationText">Generer effekt- varighetsdiagram</strong></p>
-        <br />
-        <button type="button" class="submitChart submitChart1" id="generateEffectCalculationButtonText" >Generer diagram</button>
-        <button type="button" class="submitChart submitChart2" id="resetInputs" >Reset inndata</button>
-      </section>
-      </div>
-      <div class="outputForCalculationRight">
-
-        <div class="result-row" id="printPart" hidden style="padding-top: -10px;">
-          <button class="printButton printButton1"><p class="imgDescription">Print</p><img src="/Pictures/print_icon1.GIF"/></button>
-          <section id = "section-to-print">
-            <p class="resultTextHeadline" id="printLineText1">Energiberegning luft/luft varmepumpe</p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText2">Addresse / navn</span>
-              <span class="resultTextLineInformation">{{ name }}</span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText3">Bygningskategori</span>
-              <span class="resultTextLineInformation" id="resultTextBuildingCategory"></span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText4">Kommune</span>
-              <span class="resultTextLineInformation" id="resultTextMunicipality"></span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText5">Fylke</span>
-              <span class="resultTextLineInformation" id="resultTextFylke"></span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText6">&Aringrsmiddeltemperatur</span>
-              <span class="resultTextLineInformation" id="resultTextYearMean"></span>
-              <span class="resultTextLineUnit" id="resultTextYearMeanUnit"></span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText7">DUT</span>
-              <span class="resultTextLineInformation" id="resultTextDOT"></span>
-              <span class="resultTextLineUnit" id="resultTextDOTUnit"></span>
-            </p>
-            <p class="resultTextHeadline" id="printLineText8">Inndata</p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText9">Standard</span>
-              <span class="resultTextLineInformation" id="resultTextStandard"></span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText10">Bygge&aringr</span>
-              <span class="resultTextLineInformation">{{ buildYear }}</span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText11">Areal</span>
-              <span class="resultTextLineInformation">{{ area }} </span>
-              <span class="resultTextLineUnit" > m&sup2 </span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText12">Effektbehov ved DUT</span>
-              <span class="resultTextLineInformation" > {{ effect }}</span>
-              <span class="resultTextLineUnit" > kW </span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText13">Innend&oslashrs temperatur</span>
-              <span class="resultTextLineInformation" id="resultTextIndoorTemp">{{ indoorTemperaure }}</span>
-              <span class="resultTextLineUnit" >&ordmC</span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText14">Varmebehov fra T<span style="vertical-align: sub;" id="printLineText31" >ute</span></span>
-              <span class="resultTextLineInformation" >{{ heatFromOutTemp }}</span>
-              <span class="resultTextLineUnit" >&ordmC</span>
-            </p>
-            <p class="resultTextHeadline" id="printLineText15">Varmepumpe og driftsdata</p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText16">Varmepumpe</span>
-              <span class="resultTextLineInformation" id="resultTextHeatPump"></span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText17">Nom. effekt (+7 &ordmC)</span>
-              <span class="resultTextLineInformation" id="resultTextHeatPumpNomEffect"></span>
-              <span class="resultTextLineUnit" > kW </span>
-            </p>
-            <p class="resultTextLine">
-            </br>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText18">Varmebehov</span>
-              <span class="resultTextLineInformation" id="resultTextEnergyNeed"></span>
-              <span class="resultTextLineUnit" > kWh </span>
-              <span class="resultTextLineTitle" id="printLineText19">Energidekningsgrad</span>
-              <span class="resultTextLineInformation" id="resultTextEnergyCover"></span>
-              <span class="resultTextLineUnit" > % </span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText20">Avgitt energi VP</span>
-              <span class="resultTextLineInformation" id="resultTextHeatPumpDeliveredEnergy" > </span>
-              <span class="resultTextLineUnit" > kWh </span>
-              <span class="resultTextLineTitle" id="printLineText21">Tillegseffekt fra</span>
-              <span class="resultTextLineInformation" id="resultTextAdditionFrom"></span>
-              <span class="resultTextLineUnit" > &ordmC </span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText22">Tilf&oslashrt energi VP</span>
-              <span class="resultTextLineInformation" id="resultTextHeatPumpUsedEnergy"></span>
-              <span class="resultTextLineUnit" >kWh</span>
-              <span class="resultTextLineTitle" id="printLineText23">Tilleggseffekt DUT</span>
-              <span class="resultTextLineInformation" id="resultTextAdditionEffect"></span>
-              <span class="resultTextLineUnit" > kW </span>
-            </p>
-            <p class="resultTextLine" style="margin-top:0px;">
-              <span class="resultTextLineTitle" id="printLineText24">Besparing</span>
-              <span class="resultTextLineInformation" id="resultTextSavedEnergy"></span>
-              <span class="resultTextLineUnit" >kWh</span>
-              <span class="resultTextLineTitle" id="printLineText25">&Aringrsvarmefaktor</span>
-              <span class="resultTextLineInformation" id="resultTextSCOP"></span>
-              <span class="resultTextLineUnit" ></span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle" id="printLineText26">Tilleggsenergi</span>
-              <span class="resultTextLineInformation" id="resultTextAdditionalEnergy"></span>
-              <span class="resultTextLineUnit" >kWh</span>
-              <span class="resultTextLineTitle" id="printLineText27">&Aringrsvarmefaktor <span style="vertical-align: sub;" id="printLineText30">*total</span></span>
-              <span class="resultTextLineInformation" id="resultTextSCOPTot"></span>
-              <span class="resultTextLineUnit" ></span>
-            </p>
-            <p class="resultTextLine">
-              <span class="resultTextLineTitle"></span>
-              <span class="resultTextLineInformation"></span>
-              <span class="resultTextLineUnit" ></span>
-              <span class="resultTextLineTitle" id="printLineText28">*inkluderer tilleggsenergi</span>
-              <span class="resultTextLineInformation"></span>
-              <span class="resultTextLineUnit" ></span>
-            </p>
-            <p class="resultTextHeadline" id="printLineText29">Effekt- varighetsdiagram</p>
-
-            <!--Generate resulting chart-->
-            <div class="chartArea">
-              <div class="chartCell">
-                <canvas id="chart">
-                </canvas>
-              </div>
-              <div class="legendCell">
-                <!-- Legende will be appended from app.js -->
-                <section class="legend" >
-                </section>
-              </div>
-            </div>
-            <p class="resultTextBottom">ABK AS</p>
-          </section>
-          </div>
-      </div>
-    </div>
-    <div class="myOfferDiv" id="myOfferSection" hidden>
-
-    </div>
-    <div class="offerDiv" id="offerSection" hidden>
-
-    <p class="inputP">
-        <label class="inputLabel" style="font-size: 18px;"><strong>Velg maskintype og antall: </strong></label>
-        <select class="offerSelectNumber" id="offerNumberOfMachine">
-          <option>1</option>
-        </select>
-        <select class="offerSelect" id="offerMachine">
-          <option>Loading...</option>
-        </select>
-        <select class="offerSelect2" id="offerMachineInside">
-          <option>Velg maskin</option>
-        </select>
-      </p>
-      </br>
-      <p class="inputP">
-        <label class="inputLabel" style="font-size: 18px;" ><strong>Tilbudsnavn: </strong></label><input id="tilbudsnavn" onClick="this.select()" type="text" style="width: 340px;" placeholder="Moldeveien 49"/>
-      </p>
-    </br>
-        <button type="button" class="generalButton addItemsToOffer" id="addItemsToOfferButtonText" >Legg til varer</button>
-        <button type="button" class="generalButton generateAndPrintOffer" id="generateAndPrintOfferButtonText" hidden>Lagre tilbud</button>
-        <button type="button" class="generalButton resetOffer" id="resetOfferButtonText" hidden>Reset tilbud</button>
-    </br>
-      <div id="confirmationMessage" class="confirmationMessageClass" hidden>
-      </div>
-      <div id="offerList" hidden>
-      </br>
-        <p class="inputP">
-          <p class="inputR1" style="font-weight:bold; background-color: rgba(192,192,192,0.5);">Artikkelnr</p>
-          <p class="inputR2" style="font-weight:bold; background-color: rgba(192,192,192,0.5);">Artikkelnavn</p>
-          <p class="inputR3" style="font-weight:bold; background-color: rgba(192,192,192,0.5);">Bruttopris</p>
-          <p class="inputR4" style="font-weight:bold; background-color: rgba(192,192,192,0.5);">Rab.I</p>
-          <p class="inputButton" style="background-color: rgba(192,192,192,0.5);"></p>
-          <p class="inputR5" style="font-weight:bold; background-color: rgba(192,192,192,0.5);">Antall</p>
-          <p class="inputButton" style="background-color: rgba(192,192,192,0.5);"></p>
-          <p class="inputR6" style="font-weight:bold; background-color: rgba(192,192,192,0.5);">Nettopris</p>
-          <p class="fillerRight" style="font-weight:bold; background-color: rgba(192,192,192,0.5);"></p>
-        </p>
-        <div id="offerListArticles" hidden>
-        </div>
-      </br>
-        <p class="inputP">
-          <p class="inputR1" style="font-weight:bold; "></p>
-          <p class="inputR2" style="font-weight:bold; "></p>
-          <p class="inputR3" style="font-weight:bold; "></p>
-          <p class="inputR4" style="font-weight:bold; "></p>
-          <p class="inputButton" style=""></p>
-          <p class="inputR5" style="font-weight:bold; text-align:left ; border-top: 1px solid lightgray; ">Sum tilbud</p>
-          <p class="inputButton" style="font-weight:bold; border-top: 1px solid lightgray; "></p>
-          <p class="inputR6" style="font-weight:bold; text-align:right;  border-top: 1px solid lightgray; " id="sumTilbud"></p>
-          <p class="fillerRight" style="font-weight:bold; "></p>
-        </p>
-        <p class="inputP">
-          <p class="inputR1" style="font-weight:bold; "></p>
-          <p class="inputR2" style="font-weight:bold; "></p>
-          <p class="inputR3" style="font-weight:bold; "></p>
-          <p class="inputR4" style="font-weight:bold; "></p>
-          <p class="inputButton" style=""></p>
-          <p class="inputR5" style="font-weight:bold;  text-align:left; ">mva</p>
-          <p class="inputButton" style="font-weight:bold; "></p>
-          <p class="inputR6" style="font-weight:bold; text-align:right;" id="sumMVA"></p>
-          <p class="fillerRight" style="font-weight:bold; "></p>
-        </p>
-        <p class="inputP">
-          <p class="inputR1" style="font-weight:bold; "></p>
-          <p class="inputR2" style="font-weight:bold; "></p>
-          <p class="inputR3" style="font-weight:bold; "></p>
-          <p class="inputR4" style="font-weight:bold; "></p>
-          <p class="inputButton" style=""></p>
-          <p class="inputR5" style="font-weight:bold;  text-align:left; ">S&aeligravgift</p>
-          <p class="inputButton" style="font-weight:bold; "></p>
-          <p class="inputR6" style="font-weight:bold; text-align:right; " id="sumAvgift"></p>
-          <p class="fillerRight" style="font-weight:bold; "></p>
-        </p>
-        <p class="inputP">
-          <p class="inputR1" style="font-weight:bold; "></p>
-          <p class="inputR2" style="font-weight:bold; "></p>
-          <p class="inputR3" style="font-weight:bold; "></p>
-          <p class="inputR4" style="font-weight:bold; "></p>
-          <p class="inputButton" style=""></p>
-          <p class="inputR5" style="font-weight:bold;  text-align:left; ">Total</p>
-          <p class="inputButton" style="font-weight:bold; "></p>
-          <p class="inputR6" style="font-weight:bold; text-align:right;" id="sumTotal"></p>
-          <p class="fillerRight" style="font-weight:bold; "></p>
-        </p>
-      </div>
-    </div>
-    </div>
-    <div id="footer">
-      <span class="footerRow">
-        <span class="footerSpan">
-          <img src="/Pictures/abkfooterlogo.jpg"/>
-        </span>
-        <span class="footerSpan">
-          ABK AS <br />
-          Postboks 64 Vollebekk <br />
-          0516 OSLO <br />
-          Tlf: 02320 <br />
-          post@abkklima.no <br />
-          Orgnr: 959651094 <br />
-        </span>
+</div>
+  <div id="footer">
+    <span class="footerRow">
+      <span class="footerSpan">
+        <img src="/Pictures/abkfooterlogo.jpg"/>
       </span>
-      <span class="footerRowSignature">
-        &copy Arne Hogstad Johnsen
+      <span class="footerSpan">
+        ABK AS <br />
+        Postboks 64 Vollebekk <br />
+        0516 OSLO <br />
+        Tlf: 02320 <br />
+        post@abkklima.no <br />
+        Orgnr: 959651094 <br />
       </span>
-    </div>
-  </body>
+    </span>
+    <span class="footerRowSignature">
+      &copy Arne Hogstad Johnsen
+    </span>
+  </div>
+</body>
 </html>

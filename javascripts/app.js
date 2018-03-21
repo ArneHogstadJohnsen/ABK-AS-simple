@@ -177,12 +177,6 @@ $(document).ready(function() {
   var globalSumEffect = 0;
   var globaltempafterThermalWheel = 8.7;
   var globalNomrtall = [];
-  var globalHistoricalEnergyTempMean = 0;
-  var globalEnergyRegulationDegreedays = 4005;
-  var globalEnergyRegulationTemMean = 6;
-  var globalEnergyRegulationTempDOT = -20;
-  var globalEffectFromEnergyTemMean = 0;
-  var globalEffectFromEnergyTempDOT = -20;
   var globalMachineDeliverDOT = 0;
   var globalAdditionFrom = 0;
   var globalMachineNomEffect = 0;
@@ -405,141 +399,18 @@ var createChart = function() {
           $("#resultTextMunicipality").html(currentPlace);
           $("#aarsmiddelVerdi").val(globalTempMean);
           $("#DUTverdi").val(globalTempDOT);
+          $("#aarsmiddelTempUtdata").html(globalTempMean + " &degC");
+          $("#DUTutdata").html(globalTempDOT + " &degC");
           $("#resultTextFylke").html(ui.item.county);
           $("#municipality").css("background-color", "white");
-          jQuery("#aarsmiddelTemp").show();
-          jQuery("#DUT").show();
+          $("#municipalityUtdata").html(currentPlace);
         }
       })
       .data("ui-autocomplete")._renderItem = function(ul, item) {
         return $("<li></li>").data("ui-autocomplete-item", item).append("<a>"+ item.municipality + " - " + item.county + " | " + item.tempMean + " , " + item.tempDUT + "</a>").appendTo(ul);
       };
-      //autocompletes search with values from placeArray
-      $("#municipalityHistoricalEnergy").autocomplete({
-        source: globalMunicipalityArray,
-        minLength: 2,
-        select: function(event, ui) {
-          //first taking care of local business
-          globalHistoricalEnergyTempMean = ui.item.tempMean;
-          climateZoneIndex = ui.item.zone;
-          getHistoricalYearMeanInterval();
-          updateHistoricalvalues();
-          $("#municipalityHistoricalEnergy").css("background-color", "white");
 
-          //now triggers for the effectFromEnergyCalculation
-          globalEffectFromEnergyTemMean = ui.item.tempMean;
-          globalEffectFromEnergyTempDOT = ui.item.tempDUT;
-          $("#effectFromEnergyMunicipality").val(ui.item.municipality);
 
-          //now triggers the function for calculation also
-          globalTempMean = ui.item.tempMean;
-          globalTempDOT = ui.item.tempDUT;
-          globalDegreeDays = ui.item.gradtall;
-          currentPlace = ui.item.municipality;
-          $("#municipality").val(currentPlace);
-          globalSelectedMunicipality = currentPlace;
-          $("#yearMeanForCalculation").val(globalTempMean);
-          $("#dOTForCalculation").val(globalTempDOT);
-          $("#resultTextMunicipality").html(currentPlace);
-          $("#resultTextFylke").html(ui.item.county);
-          $("#municipality").css("background-color", "white");
-        }
-      })
-      .data("ui-autocomplete")._renderItem = function(ul, item) {
-        return $("<li></li>").data("ui-autocomplete-item", item).append("<a>"+ item.municipality + " - " + item.county + " | " + item.tempMean + " , " + item.tempDUT + "</a>").appendTo(ul);
-      };
-      //autocompletes search with values from placeArray
-      $("#municipalityEffectEnergyInfoRegulation").autocomplete({
-        source: globalMunicipalityArray,
-        minLength: 2,
-        select: function(event, ui) {
-          globalEnergyRegulationDegreedays = ui.item.gradtall;
-          globalEnergyRegulationTemMean = ui.item.tempMean;
-          globalEnergyRegulationTempDOT = ui.item.tempDUT;
-          climateZoneIndex = ui.item.zone;
-          if ( $("#standardEffectEnergyInfoRegulation").val() != "" && $("#buildingCategoryEffectEnergyInfoRegulation").val() != "" && $("#buildingBRAEffectEnergyInfoRegulation").val() != ""){
-            getGlobalTemperatureArray(globalEnergyRegulationTemMean,globalEnergyRegulationTempDOT);
-            updateRegulationFormValues();
-          }
-          //now triggers for the effectFromEnergyCalculation
-          globalEffectFromEnergyTemMean = ui.item.tempMean;
-          globalEffectFromEnergyTempDOT = ui.item.tempDUT;
-          $("#effectFromEnergyMunicipality").val(ui.item.municipality);
-
-          //now triggers the function for calculation also
-          globalTempMean = ui.item.tempMean;
-          globalTempDOT = ui.item.tempDUT;
-          globalDegreeDays = ui.item.gradtall;
-          currentPlace = ui.item.municipality;
-          $("#municipality").val(currentPlace);
-          globalSelectedMunicipality = currentPlace;
-          $("#yearMeanForCalculation").val(globalTempMean);
-          $("#dOTForCalculation").val(globalTempDOT);
-          $("#resultTextMunicipality").html(currentPlace);
-          $("#resultTextFylke").html(ui.item.county);
-          $("#municipality").css("background-color", "white");
-        }
-      })
-      .data("ui-autocomplete")._renderItem = function(ul, item) {
-        return $("<li></li>").data("ui-autocomplete-item", item).append("<a>"+ item.municipality + " - " + item.county + " | " + item.tempMean + " , " + item.tempDUT + "</a>").appendTo(ul);
-      };
-      //autocompletes search with values from placeArray
-      $("#effectFromEnergyMunicipality").autocomplete({
-        source: globalMunicipalityArray,
-        minLength: 2,
-        select: function(event, ui) {
-          globalEffectFromEnergyTemMean = ui.item.tempMean;
-          globalEffectFromEnergyTempDOT = ui.item.tempDUT;
-          climateZoneIndex = ui.item.zone;
-          $("#effectFromEnergyMunicipality").css("background-color", "white");
-          if ( $("#effectFromEnergyRoomHeatingFrom").val() != "" && $("#effectFromEnergyYearlyEnergyNeed").val() != "" ){
-            getGlobalTemperatureArray(globalEffectFromEnergyTemMean,globalEffectFromEnergyTempDOT);
-            updateEffectValues();
-          }
-          //now triggers the function for calculation also
-          globalTempMean = ui.item.tempMean;
-          globalTempDOT = ui.item.tempDUT;
-          globalDegreeDays = ui.item.gradtall;
-          currentPlace = ui.item.municipality;
-          $("#municipality").val(currentPlace);
-          globalSelectedMunicipality = currentPlace;
-          $("#yearMeanForCalculation").val(globalTempMean);
-          $("#dOTForCalculation").val(globalTempDOT);
-          $("#resultTextMunicipality").html(currentPlace);
-          $("#resultTextFylke").html(ui.item.county);
-          $("#municipality").css("background-color", "white");
-        }
-      })
-      .data("ui-autocomplete")._renderItem = function(ul, item) {
-        return $("<li></li>").data("ui-autocomplete-item", item).append("<a>"+ item.municipality + " - " + item.county + " | " + item.tempMean + " , " + item.tempDUT + "</a>").appendTo(ul);
-      };
-      //autocompletes search with values from placeArray
-      $("#areaEffectMunicipality").autocomplete({
-        source: globalMunicipalityArray,
-        minLength: 2,
-        select: function(event, ui) {
-          $('#outdoorTemp').val(ui.item.tempDUT);
-          $('#outdoorTemp').trigger("input");
-
-          //now triggers the function for calculation also
-          globalTempMean = ui.item.tempMean;
-          globalTempDOT = ui.item.tempDUT;
-          globalDegreeDays = ui.item.gradtall;
-          currentPlace = ui.item.municipality;
-          climateZoneIndex = ui.item.zone;
-          globalSelectedMunicipality = currentPlace;
-          $("#municipality").val(currentPlace);
-
-          $("#yearMeanForCalculation").val(globalTempMean);
-          $("#dOTForCalculation").val(globalTempDOT);
-          $("#resultTextMunicipality").html(currentPlace);
-          $("#resultTextFylke").html(ui.item.county);
-          $("#municipality").css("background-color", "white");
-        }
-      })
-      .data("ui-autocomplete")._renderItem = function(ul, item) {
-        return $("<li></li>").data("ui-autocomplete-item", item).append("<a>"+ item.municipality + " - " + item.county + " | " + item.tempMean + " , " + item.tempDUT + "</a>").appendTo(ul);
-      };
 
     });
     });
@@ -929,6 +800,7 @@ var getEffectFromEnergy = function () {
   var durationLast = 0;
   var temperatureLast = globalTempDOT;
 
+  if (reportedEnergyNeed > 0) {
   //defines new durationarray and the array for grahing
   var localDurationArray = [];
   for (var i = 0; i < 366 ; i++){
@@ -984,6 +856,8 @@ var getEffectFromEnergy = function () {
   }
 
   return (Math.round(10 * effectDOT)/10);
+  }
+  return 0;
 };
 
 //Function identifying the relevant partial load and returns the cop at this poitn
@@ -1175,10 +1049,15 @@ var formatNumberWithThousandSpace = function (energyValue) {
 
 var updateRegulationFormValues = function () {
 
-  var localCategory = $('#buildingCategoryEffectEnergyInfoRegulation').val();
-  var localRamme = globalTEKramme[$('#standardEffectEnergyInfoRegulation').val()];
-  var localArea = parseFloat($('#buildingBRAEffectEnergyInfoRegulation').val().replace(',','.'));
-  var localDegreeDays = globalEnergyRegulationDegreedays;
+  var localCategory = "Småhus";
+  if ($('#buildingYear').val() >= 2015 ){
+    var localRamme = globalTEKramme["TEK15"];
+  }
+  if ($('#buildingYear').val() >= 2010 && $('#buildingYear').val() < 2015){
+    var localRamme = globalTEKramme["TEK10"];
+  }
+  var localArea = parseFloat($('#area').val().replace(',','.'));
+  var localDegreeDays = globalDegreedays;
 
   if ($('#standardEffectEnergyInfoRegulation').val() == "TEK15" || $('#standardEffectEnergyInfoRegulation').val() == "TEK10"){
     //addition to energyRegulation if we have Småhus or Boligblokk
@@ -1434,13 +1313,12 @@ var updateHistoricalvalues = function (){
       tempForbruk = tempForbruk + Math.round(parseFloat(localEnergyUse['8']['villa'][yearPeriodLookUp]) * area) ;
       tempforbruk = tempForbruk/8;
   $('#normtallEnergy').html( formatNumberWithThousandSpace(Math.round(tempforbruk)) + ' kWh' );
-  console.log(tempForbruk);
 }};
 
 var updateEffectValues = function (){
   $('#effecFromEnergyValue').html( getEffectFromEnergy());
   //inserting the value for effect in calculation step
-  $("#effektBehovVerdi").html(getEffectFromEnergy() + ' kW');
+  $("#effektBehovUtdata").html(getEffectFromEnergy() + ' kW');
   //$("#buildingEffectNeed").trigger("input");
 }
 
@@ -1728,6 +1606,7 @@ jQuery('.submitChart1').on('click',function(event){
 
   // Update values live
   $('#historiskForbruk').on('input', function() {
+      $("#energibehovUtdata").html(formatNumberWithThousandSpace(this.value) + " kWh");
     if ( $("#balanseTempVerdi").val() != "" && $("#municipality").val() != ""){
       getGlobalTemperatureArray(globalTempMean,globalTempDOT);
       updateEffectValues();
@@ -1798,31 +1677,30 @@ $('#buildingHeatingFrom').on('input', function() {
 $('#buildingYear').on('input', function() {
  if($("#buildingYear").val() >=2010 ){
       $("#balanseTempVerdi").val(12);
+      $("#balanseTempVerdiUtdata").html("12 &#176;C");
       $("#balanseTempVerdi").css("background-color", "white");
-      jQuery('#historicalEnergyUse').hide();
   }else if($("#buildingYear").val() >=2000 ){
       $("#balanseTempVerdi").val(13);
+      $("#balanseTempVerdiUtdata").html("13 &#176;C");
       $("#balanseTempVerdi").css("background-color", "white");
-      jQuery('#historicalEnergyUse').show();
     } else if($("#buildingYear").val() >=1990 ){
         $("#balanseTempVerdi").val(14);
+        $("#balanseTempVerdiUtdata").html("14 &#176;C");
         $("#balanseTempVerdi").css("background-color", "white");
-        jQuery('#historicalEnergyUse').show();
       } else if($("#buildingYear").val() >=1980 ){
           $("#balanseTempVerdi").val(15);
+          $("#balanseTempVerdiUtdata").html("15 &#176;C");
           $("#balanseTempVerdi").css("background-color", "white");
-          jQuery('#historicalEnergyUse').show();
         }else if($("#buildingYear").val() >=1970 ){
             $("#balanseTempVerdi").val(16);
+            $("#balanseTempVerdiUtdata").html("16 &#176;C");
             $("#balanseTempVerdi").css("background-color", "white");
-            jQuery('#historicalEnergyUse').show();
           }else if($("#buildingYear").val() >=1000 ){
               $("#balanseTempVerdi").val(17);
+              $("#balanseTempVerdiUtdata").html("17 &#176;C");
               $("#balanseTempVerdi").css("background-color", "white");
-              jQuery('#historicalEnergyUse').show();
             }
-
-            if ( $("#historiskForbruk").val() != "" && $("#municipality").val() != "" ){
+            if ( $("#area").val() != "" && $("#municipality").val() != "" ){
                 getGlobalTemperatureArray(globalTempMean,globalTempDOT);
                 updateEffectValues();
               }

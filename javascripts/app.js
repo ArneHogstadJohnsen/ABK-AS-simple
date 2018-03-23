@@ -471,31 +471,7 @@ var createChart = function() {
       .data("ui-autocomplete")._renderItem = function(ul, item) {
         return $("<li></li>").data("ui-autocomplete-item", item).append("<a>"+ item.value +' | ' + item.year + "</a>").appendTo(ul);
       };
-      //autocompletes standard with values from Uverdier for
-      $("#buildingStandard2").autocomplete({
-        source: localStandardArray,
-        minLength: 1,
-        select: function(event, ui) {
-          $("#buildingStandard2").val(ui.item.value );
-          updateUvalueFormValues();
-          updateEffectFormValues();
-          updateFacadeEffectFormvalues();
-          updateWindowEffectFormvalues();
-          updateCeilingEffectFormvalues ();
-          updateFloorwEffectFormvalues();
-          //inserting the value for building standard and heatingstart in calculation step
-          var yearArray = ui.item.range;
-          var lastyearinrange = yearArray[yearArray.length -4] + yearArray[yearArray.length -3] + yearArray[yearArray.length -2] + yearArray[yearArray.length -1];
-          $("#buildingYear").val(lastyearinrange);
-          $("#buildingYear").trigger("input");
-          $("#buildingYear").val("");
-          $("#buildingStandard").val(ui.item.value);
-          $("#resultTextStandard").html(ui.item.value );
-        }
-      })
-      .data("ui-autocomplete")._renderItem = function(ul, item) {
-        return $("<li></li>").data("ui-autocomplete-item", item).append("<a>"+ item.value +' | ' + item.year + "</a>").appendTo(ul);
-      };
+
       //autocompletes standard with values from Uverdier for
       $("#standardEffectEnergyInfoRegulation").autocomplete({
         source: [ localStandardArray[0], localStandardArray[1] ],
@@ -1064,28 +1040,29 @@ var updateRegulationFormValues = function () {
   var localCategory = "Småhus";
   if ($('#buildingYear').val() >= 2015 ){
     var localRamme = globalTEKramme["TEK15"];
+    var localVentilationSFP = globalVentilasjon.sfp["TEK15"];
+    var localVentilationHeatRecovery = globalVentilasjon.gjenvinner["TEK15"]/100;
+
   }
   if ($('#buildingYear').val() >= 2010 && $('#buildingYear').val() < 2015){
     var localRamme = globalTEKramme["TEK10"];
+    var localVentilationSFP = globalVentilasjon.sfp["TEK10"];
+    var localVentilationHeatRecovery = globalVentilasjon.gjenvinner["TEK10"]/100;
   }
-  var localArea = parseFloat($('#area').val().replace(',','.'));
-  var localDegreeDays = globalDegreedays;
 
-  if ($('#standardEffectEnergyInfoRegulation').val() == "TEK15" || $('#standardEffectEnergyInfoRegulation').val() == "TEK10"){
+  var localArea = parseFloat($('#area').val().replace(',','.'));
+  var localDegreeDays = globalDegreeDays;
+
     //addition to energyRegulation if we have Småhus or Boligblokk
-    var additionEnergyRegulation = 0;
-    var additionSFP = 0;
-    if(globalBelysning[$('#buildingCategoryEffectEnergyInfoRegulation').val()] == 11.4){
-      additionEnergyRegulation = 1600 / localArea;
-      additionSFP = 0.5;
-    }
+    var additionEnergyRegulation = 1600 / localArea;
+    var additionSFP = 0.5;
+
       //defining necessary variables to calculate effect and energy need for ventilation
     var localVentilationAmountInOperation = globalVentilasjon.mengde[localCategory].drift;
     var localVentilationAmountOutsideOperation = globalVentilasjon.mengde[localCategory].utendrift;
     var localVentilationDuration = globalVentilasjon.mengde[localCategory].andel;
-    var localVentilationSFP = globalVentilasjon.sfp[$('#standardEffectEnergyInfoRegulation').val()] + additionSFP;
-    var localVentilationHeatRecovery = globalVentilasjon.gjenvinner[$('#standardEffectEnergyInfoRegulation').val()]/100;
-    var localTempAfterRecovery = (localVentilationHeatRecovery) * (21 - globalEnergyRegulationTempDOT) + globalEnergyRegulationTempDOT;
+    var localTempAfterRecovery = (localVentilationHeatRecovery) * (21 - globalTempDOT) + globalTempDOT;
+     localVentilationSFP = localVentilationSFP + additionSFP;
 
     //retrieving standard values
     //ONLY VALID FOR TEK10, TEK15, Lavenergi and Passivhus --> Need to add functionality for Lavenergi og Passivhus
@@ -1121,38 +1098,11 @@ var updateRegulationFormValues = function () {
     var localSUmHeatingEffect = Math.round(10*(localHeatingEffect + localVentilationEffect + localHotWaterEffect))/10;
 
     //updates the table
-    $('#roomHeatSpecific').html(localHeating);
-    $('#roomHeatTotal').html(formatNumberWithThousandSpace(localHeatingEnergy));
-    $('#roomHeatEffect').html(localHeatingEffect);
+    console.log("her");
+    console.log(localHeatingEnergy);
+    console.log(localVentilationEnergy);
+    $('#normtallEnergy').html(formatNumberWithThousandSpace(localHeatingEnergy + localVentilationEnergy) + " kWh");
 
-    $('#ventilationHeatSpecific').html(localVentilationSpecific);
-    $('#ventilationHeatTotal').html(formatNumberWithThousandSpace(localVentilationEnergy));
-    $('#ventilationHeatEffect').html(localVentilationEffect);
-
-    //inserting values for hot water production
-    $('#hotWaterHeatSpecific').html(localHotWater);
-    $('#hotWaterHeatTotal').html(formatNumberWithThousandSpace(localHotWaterEnergy));
-    $('#hotWaterHeatEffect').html(localHotWaterEffect);
-
-    $('#sumHeatingPostsSpecific').html(localSumHeatingSpecific);
-    $('#sumHeatingPostsTotal').html(formatNumberWithThousandSpace(localSumHeatingTotal));
-    $('#sumHeatingPostsEffect').html(localSUmHeatingEffect);
-
-    $('#fansAndPumpsSpecific').html(localFansAndPumps);
-    $('#fansAndPumpsTotal').html(formatNumberWithThousandSpace(localFansAndPumpsTotal));
-
-    $('#lightingSpecific').html(localLigthing);
-    $('#lightingTotal').html(formatNumberWithThousandSpace(localLigthingTotal));
-
-    $('#technicalEquipmentSpecific').html(localTechnicalEquipment);
-    $('#technicalEquipmentTotal').html(formatNumberWithThousandSpace(localTechnicalEquipmentTotal));
-
-    $('#coolingSpecific').html(localCooling);
-    $('#coolingTotal').html(formatNumberWithThousandSpace(localCoolingTotal));
-
-    $('#energyRegulationsSpecific').html(localEnergyRegulation);
-    $('#energyRegulationsTotal').html(formatNumberWithThousandSpace(localEnergyRegulationTotal));
-  }
 };
 
 
@@ -1610,8 +1560,9 @@ jQuery('.submitChart1').on('click',function(event){
       $("#municipality").css("background-color", "white");
     }
   }else{
-    updateHistoricalvalues();
-  }
+    if ($('#buildingYear').val() <2010){updateHistoricalvalues();}
+    else{updateRegulationFormValues();}
+}
   //calculating the hot water
   updateHotWater();
   //inserting the value for BRA in calculation step
@@ -1624,7 +1575,8 @@ jQuery('.submitChart1').on('click',function(event){
   // Update values live
   $('#buildingYear').on('input', function() {
     $("#buildingYear").css("background-color", "white");
-    updateHistoricalvalues();
+    if ($('#buildingYear').val() <2010){updateHistoricalvalues();}
+    else{updateRegulationFormValues();}
   });
 
 
@@ -1690,44 +1642,41 @@ jQuery('.submitChart1').on('click',function(event){
     }
   });
 
-$('#buildingEffectNeed').on('input', function() {
-  $("#buildingEffectNeed").css("background-color", "white");
-});
-
-$('#buildingHeatingFrom').on('input', function() {
-  $("#buildingHeatingFrom").css("background-color", "white");
-});
 
 $('#buildingYear').on('input', function() {
- if($("#buildingYear").val() >=2010 ){
+  if($("#buildingYear").val() >=2015 ){
+    $("#balanseTempVerdi").val(10);
+    $("#balanseTempVerdiUtdata").html("10 &#176;C");
+    $("#balanseTempVerdi").css("background-color", "white");
+   }else if($("#buildingYear").val() >=2010 ){
       $("#balanseTempVerdi").val(12);
       $("#balanseTempVerdiUtdata").html("12 &#176;C");
       $("#balanseTempVerdi").css("background-color", "white");
-  }else if($("#buildingYear").val() >=2000 ){
-      $("#balanseTempVerdi").val(13);
-      $("#balanseTempVerdiUtdata").html("13 &#176;C");
-      $("#balanseTempVerdi").css("background-color", "white");
-    } else if($("#buildingYear").val() >=1990 ){
-        $("#balanseTempVerdi").val(14);
-        $("#balanseTempVerdiUtdata").html("14 &#176;C");
+      }else if($("#buildingYear").val() >=2000 ){
+        $("#balanseTempVerdi").val(13);
+        $("#balanseTempVerdiUtdata").html("13 &#176;C");
         $("#balanseTempVerdi").css("background-color", "white");
-      } else if($("#buildingYear").val() >=1980 ){
-          $("#balanseTempVerdi").val(15);
-          $("#balanseTempVerdiUtdata").html("15 &#176;C");
+        } else if($("#buildingYear").val() >=1990 ){
+          $("#balanseTempVerdi").val(14);
+          $("#balanseTempVerdiUtdata").html("14 &#176;C");
           $("#balanseTempVerdi").css("background-color", "white");
-        }else if($("#buildingYear").val() >=1970 ){
-            $("#balanseTempVerdi").val(16);
-            $("#balanseTempVerdiUtdata").html("16 &#176;C");
+          } else if($("#buildingYear").val() >=1980 ){
+            $("#balanseTempVerdi").val(15);
+            $("#balanseTempVerdiUtdata").html("15 &#176;C");
             $("#balanseTempVerdi").css("background-color", "white");
-          }else if($("#buildingYear").val() >=1000 ){
-              $("#balanseTempVerdi").val(17);
-              $("#balanseTempVerdiUtdata").html("17 &#176;C");
+            }else if($("#buildingYear").val() >=1970 ){
+              $("#balanseTempVerdi").val(16);
+              $("#balanseTempVerdiUtdata").html("16 &#176;C");
               $("#balanseTempVerdi").css("background-color", "white");
-            }
-            if ( $("#area").val() != "" && $("#municipality").val() != "" ){
-                getGlobalTemperatureArray(globalTempMean,globalTempDOT);
-                updateEffectValues();
-              }
+              }else if($("#buildingYear").val() >=1000 ){
+                $("#balanseTempVerdi").val(17);
+                $("#balanseTempVerdiUtdata").html("17 &#176;C");
+                $("#balanseTempVerdi").css("background-color", "white");
+                }
+                if ( $("#area").val() != "" && $("#municipality").val() != "" ){
+                    getGlobalTemperatureArray(globalTempMean,globalTempDOT);
+                    updateEffectValues();
+                  }
 });
 
 $('#yearMeanForCalculation').on('input', function() {

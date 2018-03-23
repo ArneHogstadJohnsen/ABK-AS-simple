@@ -180,7 +180,7 @@ $(document).ready(function() {
   var globalMachineDeliverDOT = 0;
   var globalAdditionFrom = 0;
   var globalMachineNomEffect = 0;
-
+  var globalDHW = 30;
 
   var globalSelectedMunicipality ="";
 
@@ -584,6 +584,13 @@ var createChart = function() {
   }
 });
 
+//function calculating hot water consumption
+var updateHotWater = function () {
+  var area = parseFloat($('#area').val());
+  var forbruk = Math.floor(globalDHW * area);
+  $("#tappevannEnergy").html(formatNumberWithThousandSpace(forbruk) + ' kWh');
+
+};
 
 //function to get the correct climateZone, A, B or C.
 var getGlobalTemperatureArray = function (yearMeanInput,tempDOTinput){
@@ -793,12 +800,17 @@ var getEffectFromEnergy = function () {
   var effectDOT = Math.round(parseFloat($('#historiskForbruk').val().replace(',','.'))/2000);
   var heatingFrom = parseFloat($('#balanseTempVerdi').val().replace(',','.'));
   var reportedEnergyNeed = parseFloat($('#historiskForbruk').val().replace(',','.'));
+  var area = parseFloat($('#area').val());
+  var tappevannForbruk = Math.floor(globalDHW * area);
+  var tappevannEffekt = Math.round(tappevannForbruk *10/(365*24))/10;
   var effectNow = 0;
   var effectLast = 0;
   var temperature = 0;
   var durationNow = 0;
   var durationLast = 0;
   var temperatureLast = globalTempDOT;
+
+  reportedEnergyNeed = reportedEnergyNeed - tappevannForbruk;
 
   if (reportedEnergyNeed > 0) {
   //defines new durationarray and the array for grahing
@@ -855,7 +867,7 @@ var getEffectFromEnergy = function () {
     counterWhile++
   }
 
-  return (Math.round(10 * effectDOT)/10);
+  return (Math.round(10 * (effectDOT +tappevannEffekt))/10);
   }
   return 0;
 };
@@ -1322,6 +1334,29 @@ var updateEffectValues = function (){
   //$("#buildingEffectNeed").trigger("input");
 }
 
+
+//Functions for when domestic hot water radio buttons is selected
+jQuery('input:radio[name="forbruk"]').on('change',function(event){
+  if (this.value == 'none') {
+    globalDHW = 0;
+    updateHotWater();
+  };
+  if (this.value == 'low') {
+    globalDHW = 20;
+    updateHotWater();
+  };
+  if (this.value == 'normal') {
+    globalDHW = 30;
+    updateHotWater();
+  };
+  if (this.value == 'high') {
+    globalDHW = 40;
+    updateHotWater();
+  };
+  updateEffectValues();
+});
+
+
 //effectCalculation from U values and area
 
 jQuery('.incrementDown1').on('click',function(event){
@@ -1577,7 +1612,8 @@ jQuery('.submitChart1').on('click',function(event){
   }else{
     updateHistoricalvalues();
   }
-
+  //calculating the hot water
+  updateHotWater();
   //inserting the value for BRA in calculation step
 //  $("#buildingBRA").val(this.value);
 //  $("#buildingBRA").trigger("input");
@@ -1591,18 +1627,6 @@ jQuery('.submitChart1').on('click',function(event){
     updateHistoricalvalues();
   });
 
-  // Update values live
-  $('#area').on('input', function() {
-    if(!$(this).val()){$(this).val(0);}
-    if ( $("#standardEffectEnergyInfoRegulation").val() != "" && $("#municipalityEffectEnergyInfoRegulation").val() != "" && $("#buildingCategoryEffectEnergyInfoRegulation").val() != ""){
-      getGlobalTemperatureArray(globalTempMean,globalTempDOT);
-      updateRegulationFormValues();
-      updateHistoricalvalues();
-    }
-    //inserting the value for BRA in calculation step
-    $("#buildingBRA").val(this.value);
-    $("#buildingBRA").trigger("input");
-  });
 
   // Update values live
   $('#historiskForbruk').on('input', function() {

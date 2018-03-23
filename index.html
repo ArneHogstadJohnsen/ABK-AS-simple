@@ -39,6 +39,9 @@
     </p>
     <!--Div containing the inputs -->
     <div class="inputArea">
+      <p hidden>
+        <input id="localCategory" type="text" value="Sm&#229;hus">
+      </p>
       <p>
         <span>Kommune:</span>
           <input class="inndata" id="municipality" onClick="this.select()" type="text">
@@ -102,7 +105,7 @@
            </span>
       </p>
       <p >
-         <span>Normtall energibehov per &aringr</span>
+         <span>Normtall romoppvarmingsbehov</span>
            <span class="resultSpan" id="normtallEnergy">0 kWh</span>
            <span class="dataTip" data-tip=  "Vi bruker klimasone, byggets alder og areal med normtall. Dette gir en god pekepinn p&#229; forventet energibehov til bygget. Dersom det ikke foreligger historiske forbruksdata kan denne dataten brukes i stedet. Merk ogs&#229; at det b&#248;r v&#230;re noenlunde samsvar mellom historisk forbruk og forventet forbruk med mindre det er s&#230;rforhold.">
            <img class="icon"src="/Pictures/question.png">

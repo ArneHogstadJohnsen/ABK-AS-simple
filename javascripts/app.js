@@ -457,45 +457,8 @@ var createChart = function() {
             tempValue['label'] = key + tempValue.range;
             tempValue['value'] = key ;
             localStandardArray.push(tempValue);
-
-        }
-      }
-      //autocompletes standard with values from Uverdier for
-      $("#buildingStandard").autocomplete({
-        source: localStandardArray,
-        minLength: 1,
-        select: function(event, ui) {
-          $("#resultTextStandard").html(ui.item.value );
-        }
-      })
-      .data("ui-autocomplete")._renderItem = function(ul, item) {
-        return $("<li></li>").data("ui-autocomplete-item", item).append("<a>"+ item.value +' | ' + item.year + "</a>").appendTo(ul);
-      };
-
-      //autocompletes standard with values from Uverdier for
-      $("#standardEffectEnergyInfoRegulation").autocomplete({
-        source: [ localStandardArray[0], localStandardArray[1] ],
-        minLength: 1,
-        select: function(event, ui) {
-          if ( $("#municipalityEffectEnergyInfoRegulation").val() != "" && $("#buildingCategoryEffectEnergyInfoRegulation").val() != "" && $("#buildingBRAEffectEnergyInfoRegulation").val() != ""){
-            getGlobalTemperatureArray(globalEnergyRegulationTemMean,globalEnergyRegulationTempDOT);
-            updateRegulationFormValues();
           }
-          //inserting the value for roomHeatingFrom in next step and in calculation step
-
-          $("#effectFromEnergyRoomHeatingFrom").val(12);
-          $("#effectFromEnergyBuildYear").val("");
-          $("#buildingYear").val(2015);
-          $("#buildingYear").trigger("input");
-          $("#buildingYear").val("");
-          $("#buildingStandard").val(ui.item.value);
-          $("#resultTextStandard").html(ui.item.value );
-        }
-      })
-      .data("ui-autocomplete")._renderItem = function(ul, item) {
-        return $("<li></li>").data("ui-autocomplete-item", item).append("<a>"+ item.value +' | ' + item.year + "</a>").appendTo(ul);
-      };
-
+      }
       };
       if( interMedObject["name"] == "belysning"){
       globalBelysning = interMedObject;
@@ -510,34 +473,6 @@ var createChart = function() {
             localCategorydArray.push(tempValue);
         }
       }
-      //autocompletes standard with values from Uverdier for
-      $("#buildingCategory").autocomplete({
-        source: localCategorydArray,
-        minLength: 1,
-        select: function(event, ui) {
-          $("#resultTextBuildingCategory").html(ui.item.value );
-        }
-      })
-      .data("ui-autocomplete")._renderItem = function(ul, item) {
-        return $("<li></li>").data("ui-autocomplete-item", item).append("<a>"+ item.value + "</a>").appendTo(ul);
-      };
-      //autocompletes standard with values from Uverdier for
-      $("#buildingCategoryEffectEnergyInfoRegulation").autocomplete({
-        source: localCategorydArray,
-        minLength: 1,
-        select: function(event, ui) {
-          if ( $("#standardEffectEnergyInfoRegulation").val() != "" && $("#municipalityEffectEnergyInfoRegulation").val() != "" && $("#buildingBRAEffectEnergyInfoRegulation").val() != ""){
-            getGlobalTemperatureArray(globalEnergyRegulationTemMean,globalEnergyRegulationTempDOT);
-            updateRegulationFormValues();
-          }
-          //inserting the value for building standard and heatingstart in calculation step
-          $("#buildingCategory").val(ui.item.value );
-          $("#resultTextBuildingCategory").html(ui.item.value );
-        }
-      })
-      .data("ui-autocomplete")._renderItem = function(ul, item) {
-        return $("<li></li>").data("ui-autocomplete-item", item).append("<a>"+ item.value + "</a>").appendTo(ul);
-      };
 
       };
       if( interMedObject["name"] == "kjoling"){
@@ -953,19 +888,19 @@ var getYearMeanIndex = function(tempMeanInput){
 
 var getVentilationEnergyNeed = function(localVentilationAmountInOperation,localVentilationAmountOutsideOperation,localVentilationDuration){
 
-    getGlobalTemperatureArray(globalEnergyRegulationTemMean,globalEnergyRegulationTempDOT);
+    getGlobalTemperatureArray(globalTempMean,globalTempDOT);
 
   //get efficiency of thermal wheel
   var localVentilationHeatRecovery = globalVentilasjon.gjenvinner[$('#standardEffectEnergyInfoRegulation').val()]/100;
 
   //define relevant variables for calcualtion
-  var localArea = parseFloat($('#buildingBRAEffectEnergyInfoRegulation').val().replace(',','.'));
+  var localArea = parseFloat($('#area').val().replace(',','.'));
   var effectNow = 0;
   var effectLast = 0;
   var temperature = 0;
   var durationNow = 0;
   var durationLast = 0;
-  var temperatureLast= (localVentilationHeatRecovery) * (21 - globalEnergyRegulationTempDOT) + globalEnergyRegulationTempDOT;
+  var temperatureLast= (localVentilationHeatRecovery) * (21 - globalTempDOT) + globalTempDOT;
   var counter = 0;
   var localVentEnergyNeed = 0;
 
@@ -1037,7 +972,7 @@ var formatNumberWithThousandSpace = function (energyValue) {
 
 var updateRegulationFormValues = function () {
 
-  var localCategory = "Småhus";
+  var localCategory = $('#localCategory').val();
   if ($('#buildingYear').val() >= 2015 ){
     var localRamme = globalTEKramme["TEK15"];
     var localVentilationSFP = globalVentilasjon.sfp["TEK15"];
@@ -1058,6 +993,9 @@ var updateRegulationFormValues = function () {
     var additionSFP = 0.5;
 
       //defining necessary variables to calculate effect and energy need for ventilation
+      console.log(globalVentilasjon);
+      console.log(localCategory);
+      console.log(globalVentilasjon.mengde[localCategory].drift);
     var localVentilationAmountInOperation = globalVentilasjon.mengde[localCategory].drift;
     var localVentilationAmountOutsideOperation = globalVentilasjon.mengde[localCategory].utendrift;
     var localVentilationDuration = globalVentilasjon.mengde[localCategory].andel;
@@ -1087,7 +1025,7 @@ var updateRegulationFormValues = function () {
     //Calculating the effect needs
     var localHotWaterEffect = Math.round(10 *localHotWaterEnergy/(365 * 24))/10;
     var localVentilationEffect = Math.round(10*(localArea * localVentilationAmountInOperation * 1.005 * 1.2 * (19 - localTempAfterRecovery)/3600))/10;
-    var localHeatingEffect =  Math.round(10*(0.035*localArea / (21 + 20) * (21 - globalEnergyRegulationTempDOT) - localVentilationEffect))/10;
+    var localHeatingEffect =  Math.round(10*(0.035*localArea / (21 + 20) * (21 - globalTempDOT) - localVentilationEffect))/10;
 
     //ventilation specific and total
     var localVentilationSpecific = Math.round(10*localVentilationEnergy/localArea)/10;

@@ -6,6 +6,7 @@
   <!-- LOCAL CSS FILER-->
   <link rel="stylesheet" href="/CSS-files/general/reset.css"><link>
   <link rel="stylesheet" href="/CSS-files/general/app.css"></link>
+  <link rel="stylesheet" href="/CSS-files/general/buttons.css"></link>
 
   <!-- EXTERNAL SCRIPT FILES-->
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -18,6 +19,8 @@
   <!-- LOCAL JAVASCRIPT FILES-->
   <script type="text/javascript" src="/javascripts/app.js"></script>
   <script type="text/javascript" src="/javascripts/generateOffer.js"></script>
+  <script type="text/javascript" src="/javascripts/blink.js"></script>
+  <script type="text/javascript" src="/javascripts/menuToggling.js"></script>
 
 </head>
 
@@ -97,13 +100,6 @@
          <img class="icon"src="/Pictures/question.png"><br><br>
        </span>
       </p>
-      <p>
-         <span>Historisk energiforbruk per &aringr</span>
-           <input class="inndata" id="historiskForbruk" onClick="this.select()">
-           <span class="dataTip" data-tip=  "Denne verdien brukes for &aring estimere effektbehov ved DUT. Husk at husholdningsgjenstander m&aring trekkes fra hovedm&#229;ler, bruk 60% av total til oppvarming og inkluder ytterligere 10% om tappevann skal dekkes av varmepumpe">
-           <img class="icon"src="/Pictures/question.png">
-           </span>
-      </p>
       <p >
          <span>Normtall romoppvarmingsbehov</span>
            <span class="resultSpan" id="normtallEnergy">0 kWh</span>
@@ -112,14 +108,32 @@
            </span>
       </p>
       <p>
-         <span>Energibehov tappevann per &aringr</span>
+         <span>Normtall tappevannsforbruk</span>
            <span class="resultSpan" id="tappevannEnergy">0 kWh</span>
            <span class="dataTip" data-tip=  "Vi trekker ut dette energibehovet fra totalen. Ettersom tappevann er et energibehov som varer hele &#229;ret kan vi ikke regne dette som et utekompensert effektbehov.">
            <img class="icon"src="/Pictures/question.png">
            </span>
       </p>
+      <p>
+         <span>Totalt energibehov normtall</span>
+           <span class="resultSpan" id="normtallEnergyTotalt">0 kWh</span>
+           <span class="dataTip" data-tip=  "Totalt energibehov fra normtall. Dette er romoppvarmingsbehov og tappveann lagt sammen.">
+           <img class="icon"src="/Pictures/question.png">
+           </span>
+      </p>
+      <p>
+         <span>Historisk energiforbruk per &aringr</span>
+           <input class="inndata" id="historiskForbruk" onClick="this.select()">
+           <span class="dataTip" data-tip=  "Denne verdien brukes for &aring estimere effektbehov ved DUT. Husk at husholdningsgjenstander m&aring trekkes fra hovedm&#229;ler, bruk 60% av total til oppvarming og inkluder ytterligere 10% om tappevann skal dekkes av varmepumpe">
+           <img class="icon"src="/Pictures/question.png">
+           </span>
+      </p>
+      <p>
+        <br>
+        <span></span><span class="resultSpan" ><button class="estimer">BEREGN</button></span>
+      </p>
     </div>
-    <div class="outputArea">
+    <div class="outputArea" id="outputArea" hidden>
       <p class="newSection">
       UTDATA
       </p>
@@ -151,6 +165,13 @@
            <img class="icon"src="/Pictures/question.png">
            </span>
       </p>
+      <p>
+         <span>Spesifikt effektbehov</span>
+           <span class="resultSpan blink" id="effektBehovSpesifikkUtdata">0 W/m&sup2 </span>
+           <span class="dataTip" data-tip=  "Dette er effektbehovet per m&sup2, en god pekepinn p&aring hvorvidt beregningen er realistisk.">
+           <img class="icon"src="/Pictures/question.png">
+           </span>
+      </p>
     </div>
   </div>
 </div>
@@ -167,9 +188,6 @@
         post@abkklima.no <br />
         Orgnr: 959651094 <br />
       </span>
-    </span>
-    <span class="footerRowSignature">
-      &copy Arne Hogstad Johnsen
     </span>
   </div>
 </body>

@@ -993,9 +993,6 @@ var updateRegulationFormValues = function () {
     var additionSFP = 0.5;
 
       //defining necessary variables to calculate effect and energy need for ventilation
-      console.log(globalVentilasjon);
-      console.log(localCategory);
-      console.log(globalVentilasjon.mengde[localCategory].drift);
     var localVentilationAmountInOperation = globalVentilasjon.mengde[localCategory].drift;
     var localVentilationAmountOutsideOperation = globalVentilasjon.mengde[localCategory].utendrift;
     var localVentilationDuration = globalVentilasjon.mengde[localCategory].andel;
@@ -1036,10 +1033,8 @@ var updateRegulationFormValues = function () {
     var localSUmHeatingEffect = Math.round(10*(localHeatingEffect + localVentilationEffect + localHotWaterEffect))/10;
 
     //updates the table
-    console.log("her");
-    console.log(localHeatingEnergy);
-    console.log(localVentilationEnergy);
     $('#normtallEnergy').html(formatNumberWithThousandSpace(localHeatingEnergy + localVentilationEnergy) + " kWh");
+    $('#normtallEnergyTotalt').html(formatNumberWithThousandSpace(localHeatingEnergy + localVentilationEnergy + localArea*globalDHW) + " kWh");
 
 };
 
@@ -1213,18 +1208,20 @@ var updateHistoricalvalues = function (){
       tempForbruk = tempForbruk + Math.round(parseFloat(localEnergyUse['8']['villa'][yearPeriodLookUp]) * area) ;
       tempforbruk = tempForbruk/8;
   $('#normtallEnergy').html( formatNumberWithThousandSpace(Math.round(tempforbruk)) + ' kWh' );
+  $('#normtallEnergyTotalt').html( formatNumberWithThousandSpace(Math.round(tempforbruk) + globalDHW*area) + ' kWh' );
 }};
 
 var updateEffectValues = function (){
   $('#effecFromEnergyValue').html( getEffectFromEnergy());
   //inserting the value for effect in calculation step
   $("#effektBehovUtdata").html(getEffectFromEnergy() + ' kW');
+  $("#effektBehovSpesifikkUtdata").html(Math.round(getEffectFromEnergy()*1000/parseFloat($('#area').val().replace(',','.')),1) + ' W/m&sup2');
   //$("#buildingEffectNeed").trigger("input");
 }
 
-
 //Functions for when domestic hot water radio buttons is selected
 jQuery('input:radio[name="forbruk"]').on('change',function(event){
+  $('.outputArea').slideUp();
   if (this.value == 'none') {
     globalDHW = 0;
     updateHotWater();
@@ -1242,6 +1239,9 @@ jQuery('input:radio[name="forbruk"]').on('change',function(event){
     updateHotWater();
   };
   updateEffectValues();
+  if ($('#buildingYear').val() <2010){updateHistoricalvalues();}
+  else{updateRegulationFormValues();}
+
 });
 
 
@@ -1486,18 +1486,7 @@ jQuery('.submitChart1').on('click',function(event){
     if(!$(this).val()){$(this).val(0);}
   //  $('#buildingHotWaterHistoricalEnergy').html(formatNumberWithThousandSpace( 29.8 * $('#buildingBRAHistoricalEnergy').val() ));
   //  $('#buildingHotWaterHistoricalEnergy').append(' kWh');
-  if($('#buildingYear').val() == "" || $('#municipality').val() == "" || $('#area').val() == ""){
-    if($('#buildingYear').val() == ""){
-      $("#buildingYear").css("background-color", "yellow");
-    }else{
-      $("#buildingYear").css("background-color", "white");
-    }
-    if($('#municipality').val() == ""){
-       $("#municipality").css("background-color", "yellow");
-    }else {
-      $("#municipality").css("background-color", "white");
-    }
-  }else{
+  if($('#buildingYear').val() != "" && $('#municipality').val() != "" && $('#area').val() != ""){
     if ($('#buildingYear').val() <2010){updateHistoricalvalues();}
     else{updateRegulationFormValues();}
 }
@@ -1524,14 +1513,7 @@ jQuery('.submitChart1').on('click',function(event){
     if ( $("#balanseTempVerdi").val() != "" && $("#municipality").val() != ""){
       getGlobalTemperatureArray(globalTempMean,globalTempDOT);
       updateEffectValues();
-    }else{
-       if ( $("#balanseTempVerdi").val() == "" ){
-        $("#balanseTempVerdi").css("background-color", "yellow");
-        }
-        if ( $("#municipality").val() == "" ){
-          $("#municipality").css("background-color", "yellow");
-        }
-      }
+    }
   });
 
   // Update values live
@@ -1541,27 +1523,21 @@ jQuery('.submitChart1').on('click',function(event){
     var tempVal = 0;
     if($("#effectFromEnergyBuildYear").val() >=2010 ){
         $("#effectFromEnergyRoomHeatingFrom").val(12);
-        $("#effectFromEnergyRoomHeatingFrom").css("background-color", "white");
         tempVal = 12;
     } else if($("#effectFromEnergyBuildYear").val() >=2000 ){
         $("#effectFromEnergyRoomHeatingFrom").val(13);
-        $("#effectFromEnergyRoomHeatingFrom").css("background-color", "white");
         tempVal = 13;
       } else if($("#effectFromEnergyBuildYear").val() >=1990 ){
           $("#effectFromEnergyRoomHeatingFrom").val(14);
-          $("#effectFromEnergyRoomHeatingFrom").css("background-color", "white");
           tempVal = 14;
         } else if($("#effectFromEnergyBuildYear").val() >=1980 ){
             $("#effectFromEnergyRoomHeatingFrom").val(15);
-            $("#effectFromEnergyRoomHeatingFrom").css("background-color", "white");
             tempVal = 15;
           }else if($("#effectFromEnergyBuildYear").val() >=1970 ){
               $("#effectFromEnergyRoomHeatingFrom").val(16);
-              $("#effectFromEnergyRoomHeatingFrom").css("background-color", "white");
               tempVal = 16;
             }else{
                 $("#effectFromEnergyRoomHeatingFrom").val(17);
-                $("#effectFromEnergyRoomHeatingFrom").css("background-color", "white");
                 tempVal = 17;
               }
               $("#buildingHeatingFrom").val(tempVal);
@@ -1585,31 +1561,24 @@ $('#buildingYear').on('input', function() {
   if($("#buildingYear").val() >=2015 ){
     $("#balanseTempVerdi").val(10);
     $("#balanseTempVerdiUtdata").html("10 &#176;C");
-    $("#balanseTempVerdi").css("background-color", "white");
    }else if($("#buildingYear").val() >=2010 ){
       $("#balanseTempVerdi").val(12);
       $("#balanseTempVerdiUtdata").html("12 &#176;C");
-      $("#balanseTempVerdi").css("background-color", "white");
       }else if($("#buildingYear").val() >=2000 ){
         $("#balanseTempVerdi").val(13);
         $("#balanseTempVerdiUtdata").html("13 &#176;C");
-        $("#balanseTempVerdi").css("background-color", "white");
         } else if($("#buildingYear").val() >=1990 ){
           $("#balanseTempVerdi").val(14);
           $("#balanseTempVerdiUtdata").html("14 &#176;C");
-          $("#balanseTempVerdi").css("background-color", "white");
           } else if($("#buildingYear").val() >=1980 ){
             $("#balanseTempVerdi").val(15);
             $("#balanseTempVerdiUtdata").html("15 &#176;C");
-            $("#balanseTempVerdi").css("background-color", "white");
             }else if($("#buildingYear").val() >=1970 ){
               $("#balanseTempVerdi").val(16);
               $("#balanseTempVerdiUtdata").html("16 &#176;C");
-              $("#balanseTempVerdi").css("background-color", "white");
               }else if($("#buildingYear").val() >=1000 ){
                 $("#balanseTempVerdi").val(17);
                 $("#balanseTempVerdiUtdata").html("17 &#176;C");
-                $("#balanseTempVerdi").css("background-color", "white");
                 }
                 if ( $("#area").val() != "" && $("#municipality").val() != "" ){
                     getGlobalTemperatureArray(globalTempMean,globalTempDOT);
@@ -1636,6 +1605,70 @@ $('#numberOfMachines').on('change', function() {
 $('#machines').on('change', function() {
     $('.submitChart1').trigger("click");
 });
+
+//////////////////////////////////// KNAPPPER ///////////////////////////////////////////
+var effectCheck = function(){
+  if ($('#buildingYear').val() >= 2015){
+    if (parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.9 * (21 - $('#DUTverdi').val()) / 41 * 30){
+      $('.blink').blink({
+          delay: 400
+      });
+    }
+  }
+
+  if ($('#buildingYear').val() >= 2010 && $('#buildingYear').val() < 2015){
+    if (parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.9 * (21 - $('#DUTverdi').val()) / 41 * 30){
+      $('.blink').blink({
+          delay: 400
+      });
+    }
+  }
+  if ($('#buildingYear').val() >= 1997 && $('#buildingYear').val() < 2010){
+    if(parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.9 * (-1*$('#DUTverdi').val() + 20)) {
+      $('.blink').blink({
+          delay: 400
+      });
+    }
+  }
+  if ($('#buildingYear').val() < 1997){
+    if(parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.9 * (-1*$('#DUTverdi').val() + 30)) {
+      $('.blink').blink({
+          delay: 400
+      });
+    }
+  }
+}
+
+
+jQuery('.estimer').on('click',function(event){
+  if ($('#historiskForbruk').val() != "" && $('#municipality').val() != ""  && $('#buildingYear').val() != "" && $('#area').val() != ""){
+  effectCheck();
+  $('.outputArea').slideDown("slow");
+  }
+  else {
+    if ($('#historiskForbruk').val() == ""){
+      $('#historiskForbruk').css("background-color", "yellow");
+    }
+    if ($('#municipality').val() == ""){
+      $('#municipality').css("background-color", "yellow");
+    }
+    if ($('#buildingYear').val() == ""){
+      $('#buildingYear').css("background-color", "yellow");
+    }
+    if ($('#area').val() == ""){
+      $('#area').css("background-color", "yellow");
+    }
+  }
+});
+
+jQuery('.inndata').on('input',function(event){
+
+  $(this).css("background-color", "white");
+  $('.outputArea').slideUp();
+  $('.blink').unblink();
+});
+
+
 
 jQuery('.printButton1').on('click',function(event){
 

@@ -46,7 +46,7 @@ div.inputArea {
 
 input{
   height: 20px;
-  font-size: 15px;
+  font-size: 100%;
 }
 
 input.inndata{
@@ -83,6 +83,7 @@ img.icon {
 
 p.newSection{
   background-color: lightgray;
+  font-weight: bold;
 }
 
 .radioform{

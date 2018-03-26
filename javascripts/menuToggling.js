@@ -382,4 +382,9 @@ $('#prevNextNav').on("click", ".menuButtonsNext", function(event){
   else if (pos == 2){$( ".navButton7" ).trigger( "click" );$('#menuDescriptionNext').html("");}
 });
 
+
+
+
+
+
 });

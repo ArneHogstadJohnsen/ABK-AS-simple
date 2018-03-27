@@ -404,6 +404,9 @@ var createChart = function() {
           $("#resultTextFylke").html(ui.item.county);
           $("#municipality").css("background-color", "white");
           $("#municipalityUtdata").html(currentPlace);
+          updateEffectValues();
+          if ($('#buildingYear').val() <2010){updateHistoricalvalues();}
+          else{updateRegulationFormValues();}
         }
       })
       .data("ui-autocomplete")._renderItem = function(ul, item) {
@@ -497,7 +500,11 @@ var createChart = function() {
 
 //function calculating hot water consumption
 var updateHotWater = function () {
-  var area = parseFloat($('#area').val());
+  if ($("#area").val() != ""){
+    var area = parseFloat($('#area').val());
+  }else{
+    var area = 0;
+  }
   var forbruk = Math.floor(globalDHW * area);
   $("#tappevannEnergy").html(formatNumberWithThousandSpace(forbruk) + ' kWh');
 
@@ -1039,117 +1046,6 @@ var updateRegulationFormValues = function () {
 };
 
 
-var updateUvalueFormValues = function (){
-  //updates the table
-
-  //Updates U-values
-  $('#uValueFacade').html(globalUverdier[$('#buildingStandard2').val()].yttervegg);
-  $('#uValueFloor').html(globalUverdier[$('#buildingStandard2').val()].gulv);
-  $('#uValueCeiling').html(globalUverdier[$('#buildingStandard2').val()].tak);
-  $('#uValueWindow').html(globalUverdier[$('#buildingStandard2').val()].vindu);
-  $('#infiltrationNumber').html(globalUverdier[$('#buildingStandard2').val()].lekkasjetall);
-  $('#airChanges').html(Math.round(100*globalUverdier[$('#buildingStandard2').val()].lekkasjetall*0.07)/100);
-}
-
-var updateTempFormValues = function (){
-  //Updates Outdoortemperatures
-  globalFormDOT = parseFloat($('#outdoorTemp').val());
-  $('#outdoorTemp1').html(globalFormDOT);
-  $('#outdoorTemp2').html(globalFormDOT);
-  $('#outdoorTemp3').html(globalFormDOT);
-  $('#groundTemp').html(-5);
-
-  //Updates Indoortemperatures
-  globalFormIndoor = parseFloat($('#indoorTemp').val());
-  $('#indoorTemp1').html(globalFormIndoor);
-  $('#indoorTemp2').html(globalFormIndoor);
-  $('#indoorTemp3').html(globalFormIndoor);
-  $('#indoorTemp4').html(globalFormIndoor);
-  $('#indoorTemp5').html(globalFormIndoor);
-  globaltempafterThermalWheel = Math.round(10*((globalFormIndoor - globalFormDOT) * parseFloat($('#thermalWheel').val()) / 100 + globalFormDOT))/10;
-  $('#tempEfterThermal').html(globaltempafterThermalWheel);
-
-};
-
-var updateEffectFormValues = function (){
-  globalFormIndoor = parseFloat($('#indoorTemp').val());
-  globalFacadeEffect = Math.round((parseFloat($('#facadeArea').val()) * parseFloat($(document.getElementById ( "uValueFacade" )).text()) * (globalFormIndoor - parseFloat(globalFormDOT))));
-  globalFloorEffect = Math.round((parseFloat($('#floorArea').val()) * parseFloat($(document.getElementById ( "uValueFloor" )).text()) * (globalFormIndoor + 5)));
-  globalCeilingEffect = Math.round((parseFloat($('#ceilingArea').val()) * parseFloat($(document.getElementById ( "uValueCeiling" )).text()) * (globalFormIndoor  - parseFloat(globalFormDOT))));
-  globalWindowEffect = Math.round((parseFloat($('#windowArea').val()) * parseFloat($(document.getElementById ( "uValueWindow" )).text()) * (globalFormIndoor  - parseFloat(globalFormDOT))));
-  globalSumTransmissionEffect = globalFacadeEffect + globalFloorEffect + globalCeilingEffect + globalWindowEffect;
-  globaltempafterThermalWheel = Math.round(10*((globalFormIndoor - globalFormDOT) * parseFloat($('#thermalWheel').val()) / 100 + globalFormDOT))/10;
-  var ventilationVolume = parseFloat($('#ventilationFlow').val());
-  var airchangeVolume = Math.round(100*parseFloat($(document.getElementById ( "infiltrationNumber" )).text())*0.07)/100 * parseFloat($('#infiltration').val());
-  globalVentilationHPEffect = Math.round( 10*(ventilationVolume/3600 * 1.2 * 1.005 * ( globalFormIndoor - globaltempafterThermalWheel)))/10;
-  globalInfiltrationEffect = Math.round(10*(airchangeVolume/3600 * 1.2 * 1.005 * ( globalFormIndoor - globalFormDOT )))/10;
-  globalSumEffect = globalSumTransmissionEffect + globalVentilationHPEffect*1000 + globalInfiltrationEffect*1000;
-
-  //inserting the value for effect in calculation step
-  $("#buildingEffectNeed").val(Math.round( globalSumEffect/100 )/10);
-  $("#buildingEffectNeed").trigger("input");
-  //inserting the value for indoor temperature in calculation step
-  $("#tempIndoor").val(globalFormIndoor);
-  $("#tempIndoor").trigger("input");
-};
-
-var updateCeilingEffectFormvalues = function () {
-  $('#estimatedEffectCeiling').html(Math.round( globalCeilingEffect/100 )/10 + ' kW');
-  $('#sumEffectsUValueAndArea').html(Math.round( globalSumTransmissionEffect/100 )/10 + ' kW');
-  $('#sumHeatingPostsEffect').html(Math.round( globalSumEffect/100 )/10 + ' kW');
-};
-
-var updateWindowEffectFormvalues = function () {
-  $('#estimatedEffectWindow').html(Math.round( globalWindowEffect/100 )/10 + ' kW');//globalWindowEffect
-  $('#sumEffectsUValueAndArea').html(Math.round( globalSumTransmissionEffect/100 )/10 + ' kW');
-  $('#sumHeatingPostsEffect').html(Math.round( globalSumEffect/100 )/10 + ' kW');
-};
-
-var updateFloorwEffectFormvalues = function () {
-  $('#estimatedEffectFloor').html(Math.round( globalFloorEffect/100 )/10 + ' kW');//globalFloorEffect
-  $('#sumEffectsUValueAndArea').html(Math.round( globalSumTransmissionEffect/100 )/10 + ' kW');
-  $('#sumHeatingPostsEffect').html(Math.round( globalSumEffect/100 )/10 + ' kW');
-};
-
-var updateFacadeEffectFormvalues = function () {
-  $('#estimatedEffectFacade').html(Math.round( globalFacadeEffect/100 )/10 + ' kW');//globalFacadeEffect
-  $('#sumEffectsUValueAndArea').html(Math.round( globalSumTransmissionEffect/100 )/10 + ' kW');
-  $('#sumHeatingPostsEffect').html(Math.round( globalSumEffect/100 )/10 + ' kW');
-};
-
-var updateVentilationEffectFormvalues = function () {
-  $('#ventilationEffectHP').html(formatNumberWithThousandSpace(globalVentilationHPEffect) + ' kW');
-  $('#sumHeatingPostsEffect').html(Math.round( globalSumEffect/100 )/10 + ' kW');
-
-};
-
-var updateinfiltrationEffectFormvalues = function () {
-  $('#infiltrationEffect').html(formatNumberWithThousandSpace(globalInfiltrationEffect) + ' kW');
-  $('#sumHeatingPostsEffect').html(Math.round( globalSumEffect/100 )/10 + ' kW');
-
-};
-
-var getHistoricalYearMeanInterval = function () {
-  var temp = globalHistoricalEnergyTempMean;
-  //define the temperatureinterval
-  if (temp <=0){
-  var interval = " 0 - 3 &ordmc";
-  }
-  if (temp >0 && temp <3){
-  var interval = " 0 - 3 &ordmc";
-  }
-  if (temp >=3 && temp <5){
-  var interval = " 3 - 5 &ordmc";
-  }
-  if (temp >=5 && temp <7){
-  var interval = " 5 - 7 &ordmc";
-  }
-  if (temp >=7){
-  var interval = " >= 7 &ordmc";
-  }
-  $('#arsmiddeltemp').html(interval);
-}
-
 var updateHistoricalvalues = function (){
   var temp = globalTempMean;
   var area = parseFloat($('#area').val());
@@ -1206,16 +1102,23 @@ var updateHistoricalvalues = function (){
       tempForbruk = tempForbruk + Math.round(parseFloat(localEnergyUse['6']['villa'][yearPeriodLookUp]) * area);
       tempForbruk = tempForbruk + Math.round(parseFloat(localEnergyUse['7']['villa'][yearPeriodLookUp]) * area);
       tempForbruk = tempForbruk + Math.round(parseFloat(localEnergyUse['8']['villa'][yearPeriodLookUp]) * area) ;
-      tempforbruk = tempForbruk/8;
+      tempforbruk = tempForbruk/8 - area * 15;
   $('#normtallEnergy').html( formatNumberWithThousandSpace(Math.round(tempforbruk)) + ' kWh' );
   $('#normtallEnergyTotalt').html( formatNumberWithThousandSpace(Math.round(tempforbruk) + globalDHW*area) + ' kWh' );
 }};
 
 var updateEffectValues = function (){
-  $('#effecFromEnergyValue').html( getEffectFromEnergy());
+  var area = parseFloat($('#area').val().replace(',','.'));
+  var totEffect = getEffectFromEnergy();
+  var dhWEffect = Math.round(globalDHW*area/(365*24)*10)/10;
+  $('#effecFromEnergyValue').html(totEffect);
   //inserting the value for effect in calculation step
-  $("#effektBehovUtdata").html(getEffectFromEnergy() + ' kW');
-  $("#effektBehovSpesifikkUtdata").html(Math.round(getEffectFromEnergy()*1000/parseFloat($('#area').val().replace(',','.')),1) + ' W/m&sup2');
+  $("#effektBehovUtdata").html(totEffect + ' kW');
+  $("#effektBehovSpesifikkUtdata").html( Math.round((totEffect - dhWEffect)*1000/area*10)/10 + ' W/m&sup2');
+  $("#effektBehovRomUtdata").html(Math.round((totEffect - dhWEffect)*10)/10 + ' kW');
+  $("#effektBehovTappevannUtdata").html( dhWEffect + ' kW');
+
+
   //$("#buildingEffectNeed").trigger("input");
 }
 
@@ -1243,91 +1146,6 @@ jQuery('input:radio[name="forbruk"]').on('change',function(event){
   else{updateRegulationFormValues();}
 
 });
-
-
-//effectCalculation from U values and area
-
-jQuery('.incrementDown1').on('click',function(event){
-  var interMedValue = parseFloat($(document.getElementById ( "uValueFacade" )).text());
-  interMedValue = Math.round(100*(interMedValue - 0.01))/100;
-  $('#uValueFacade').html(interMedValue);
-  updateEffectFormValues ();
-  updateFacadeEffectFormvalues();
-});
-
-jQuery('.incrementUp1').on('click',function(event){
-  var interMedValue = parseFloat($(document.getElementById ( "uValueFacade" )).text());
-  interMedValue = Math.round(100*(interMedValue + 0.01))/100;
-  $('#uValueFacade').html(interMedValue);
-  updateEffectFormValues ();
-  updateFacadeEffectFormvalues();
-});
-
-jQuery('.incrementDown2').on('click',function(event){
-  var interMedValue = parseFloat($(document.getElementById ( "uValueFloor" )).text());
-  interMedValue = Math.round(100*(interMedValue - 0.01))/100;
-  $('#uValueFloor').html(interMedValue);
-  updateEffectFormValues ();
-  updateFloorwEffectFormvalues();
-});
-
-jQuery('.incrementUp2').on('click',function(event){
-  var interMedValue = parseFloat($(document.getElementById ( "uValueFloor" )).text());
-  interMedValue = Math.round(100*(interMedValue + 0.01))/100;
-  $('#uValueFloor').html(interMedValue);
-  updateEffectFormValues ();
-  updateFloorwEffectFormvalues();
-});
-
-jQuery('.incrementDown3').on('click',function(event){
-  var interMedValue = parseFloat($(document.getElementById ( "uValueCeiling" )).text());
-  interMedValue = Math.round(100*(interMedValue - 0.01))/100;
-  $('#uValueCeiling').html(interMedValue);
-  updateEffectFormValues ();
-  updateCeilingEffectFormvalues();
-});
-
-jQuery('.incrementUp3').on('click',function(event){
-  var interMedValue = parseFloat($(document.getElementById ( "uValueCeiling" )).text());
-  interMedValue = Math.round(100*(interMedValue + 0.01))/100;
-  $('#uValueCeiling').html(interMedValue);
-  updateEffectFormValues ();
-  updateCeilingEffectFormvalues();
-});
-
-jQuery('.incrementDown4').on('click',function(event){
-  var interMedValue = parseFloat($(document.getElementById ( "uValueWindow" )).text());
-  interMedValue = Math.round(10*(interMedValue - 0.1))/10;
-  $('#uValueWindow').html(interMedValue);
-  updateEffectFormValues ();
-  updateWindowEffectFormvalues();
-});
-
-jQuery('.incrementUp4').on('click',function(event){
-  var interMedValue = parseFloat($(document.getElementById ( "uValueWindow" )).text());
-  interMedValue = Math.round(10*(interMedValue + 0.1))/10;
-  $('#uValueWindow').html(interMedValue);
-  updateEffectFormValues ();
-  updateWindowEffectFormvalues();
-});
-
-jQuery('.incrementDown5').on('click',function(event){
-  var interMedValue = parseFloat($(document.getElementById ( "infiltrationNumber" )).text());
-  interMedValue = Math.round(10*(interMedValue - 0.1))/10;
-  $('#infiltrationNumber').html(interMedValue);
-  updateEffectFormValues ();
-  updateinfiltrationEffectFormvalues();
-});
-
-jQuery('.incrementUp5').on('click',function(event){
-  var interMedValue = parseFloat($(document.getElementById ( "infiltrationNumber" )).text());
-  interMedValue = Math.round(10*(interMedValue + 0.1))/10;
-  $('#infiltrationNumber').html(interMedValue);
-  $('#airChanges').html(Math.round(100 *interMedValue * 0.07 )/100);
-  updateEffectFormValues ();
-  updateinfiltrationEffectFormvalues();
-});
-
 
 //----------------------Chart and machines------------------------------------
 jQuery('#numberOfMachines').on('change',function(event){
@@ -1409,77 +1227,6 @@ jQuery('.submitChart1').on('click',function(event){
   }
 });
 
-//////////////////////////////////////////////////////----------------INPUTS---UPDATE------LIVE//////////7
-  // Update values live
-  $('#facadeArea').on('input', function() {
-    if(!$(this).val()){$(this).val(0);}
-    updateEffectFormValues ();
-    updateFacadeEffectFormvalues();
-  });
-
-
-  // Update values live
-  $('#floorArea').on('input', function() {
-    if(!$(this).val()){$(this).val(0);}
-    updateEffectFormValues();
-    updateFloorwEffectFormvalues();
-  });
-
-  // Update values live
-  $('#ceilingArea').on('input', function() {
-    if(!$(this).val()){$(this).val(0);}
-    updateEffectFormValues();
-    updateCeilingEffectFormvalues ();
-  });
-
-  // Update values live
-  $('#windowArea').on('input', function() {
-    if(!$(this).val()){$(this).val(0);}
-    updateEffectFormValues();
-    updateWindowEffectFormvalues();
-  });
-
-  // Update values live
-  $('#indoorTemp').on('input', function() {
-    updateTempFormValues();
-    updateEffectFormValues();
-    updateFacadeEffectFormvalues();
-    updateWindowEffectFormvalues();
-    updateCeilingEffectFormvalues ();
-    updateFloorwEffectFormvalues();
-  });
-
-  // Update values live
-  $('#outdoorTemp').on('input', function() {
-    updateTempFormValues();
-    updateEffectFormValues();
-    updateFacadeEffectFormvalues();
-    updateWindowEffectFormvalues();
-    updateCeilingEffectFormvalues ();
-    updateFloorwEffectFormvalues();
-  });
-
-  // Update values live
-  $('#thermalWheel').on('input', function() {
-    if(!$(this).val()){$(this).val(0);}
-    updateTempFormValues();
-    updateEffectFormValues();
-    updateVentilationEffectFormvalues();
-  });
-
-  // Update values live
-  $('#ventilationFlow').on('input', function() {
-    if(!$(this).val()){$(this).val(0);}
-    updateEffectFormValues();
-    updateVentilationEffectFormvalues();
-  });
-
-  // Update values live
-  $('#infiltration').on('input', function() {
-    if(!$(this).val()){$(this).val(0);}
-    updateEffectFormValues();
-    updateinfiltrationEffectFormvalues();
-  });
 
   // Update values live
   $('#area').on('input', function() {
@@ -1516,42 +1263,12 @@ jQuery('.submitChart1').on('click',function(event){
     }
   });
 
-  // Update values live
-  $('#effectFromEnergyBuildYear').on('input', function() {
-    $("#buildingYear").val(this.value);
-    $("#buildingYear").trigger("input");
-    var tempVal = 0;
-    if($("#effectFromEnergyBuildYear").val() >=2010 ){
-        $("#effectFromEnergyRoomHeatingFrom").val(12);
-        tempVal = 12;
-    } else if($("#effectFromEnergyBuildYear").val() >=2000 ){
-        $("#effectFromEnergyRoomHeatingFrom").val(13);
-        tempVal = 13;
-      } else if($("#effectFromEnergyBuildYear").val() >=1990 ){
-          $("#effectFromEnergyRoomHeatingFrom").val(14);
-          tempVal = 14;
-        } else if($("#effectFromEnergyBuildYear").val() >=1980 ){
-            $("#effectFromEnergyRoomHeatingFrom").val(15);
-            tempVal = 15;
-          }else if($("#effectFromEnergyBuildYear").val() >=1970 ){
-              $("#effectFromEnergyRoomHeatingFrom").val(16);
-              tempVal = 16;
-            }else{
-                $("#effectFromEnergyRoomHeatingFrom").val(17);
-                tempVal = 17;
-              }
-              $("#buildingHeatingFrom").val(tempVal);
-              $("#buildingHeatingFrom").trigger("input");
-      if ( $("#effectFromEnergyYearlyEnergyNeed").val() != "" && $("#effectFromEnergyMunicipality").val() != "" ){
-          getGlobalTemperatureArray(globalEffectFromEnergyTemMean,globalEffectFromEnergyTempDOT);
-          updateEffectValues();
-        }
-  });
 
   // Update values live
   $('#balanseTempVerdi').on('input', function() {
+    $("#balanseTempVerdiUtdata").html(this.value +"&#176;C");
     if ( $("#historiskForbruk").val() != "" && $("#municipality").val() != ""){
-      getGlobalTemperatureArray(globalEffectFromEnergyTemMean,globalEffectFromEnergyTempDOT);
+      getGlobalTemperatureArray(globalTempMean,globalTempDOT);
       updateEffectValues();
     }
   });
@@ -1594,22 +1311,11 @@ $('#dOTForCalculation').on('input', function() {
   globalTempDOT = parseFloat($('#dOTForCalculation').val().replace(',','.'));
 });
 
-$('#municipality').on('input', function() {
-    jQuery('#printPart').hide();
-});
-
-$('#numberOfMachines').on('change', function() {
-  $('.submitChart1').trigger("click");
-});
-
-$('#machines').on('change', function() {
-    $('.submitChart1').trigger("click");
-});
 
 //////////////////////////////////// KNAPPPER ///////////////////////////////////////////
 var effectCheck = function(){
   if ($('#buildingYear').val() >= 2015){
-    if (parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.9 * (21 - $('#DUTverdi').val()) / 41 * 30){
+    if (parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.8 * (21 - $('#DUTverdi').val()) / 41 * 30){
       $('.blink').blink({
           delay: 400
       });
@@ -1617,21 +1323,28 @@ var effectCheck = function(){
   }
 
   if ($('#buildingYear').val() >= 2010 && $('#buildingYear').val() < 2015){
-    if (parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.9 * (21 - $('#DUTverdi').val()) / 41 * 30){
+    if (parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.8 * (21 - $('#DUTverdi').val()) / 41 * 30){
       $('.blink').blink({
           delay: 400
       });
     }
   }
   if ($('#buildingYear').val() >= 1997 && $('#buildingYear').val() < 2010){
-    if(parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.9 * (-1*$('#DUTverdi').val() + 20)) {
+    if(parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.8 * (-1*$('#DUTverdi').val() + 20)) {
       $('.blink').blink({
           delay: 400
       });
     }
   }
   if ($('#buildingYear').val() < 1997){
-    if(parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.9 * (-1*$('#DUTverdi').val() + 30)) {
+    if(parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.8 * (-1.5*$('#DUTverdi').val() + 30)) {
+      $('.blink').blink({
+          delay: 400
+      });
+    }
+  }
+  if ($('#buildingYear').val() < 1987){
+    if(parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.8  * (-1.8*$('#DUTverdi').val() + 37)) {
       $('.blink').blink({
           delay: 400
       });
@@ -1667,6 +1380,10 @@ jQuery('.inndata').on('input',function(event){
   $('.outputArea').slideUp();
   $('.blink').unblink();
 });
+
+
+
+
 
 
 

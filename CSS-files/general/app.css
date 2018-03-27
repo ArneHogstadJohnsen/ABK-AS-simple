@@ -53,10 +53,10 @@ input.inndata{
   width: 20%;
   min-width: 150px;
   display: inline-block;
-  text-align: center;
+  text-align: right;
+  padding-right:  40px;
 
 }
-
 
 img {
     padding: 0;
@@ -75,6 +75,11 @@ img.icon {
     vertical-align: middle;
 }
 
+img.infoPic {
+    padding: 0;
+    min-width: 20%;
+    max-height: 600px;
+}
 
 #container {
   height: auto;
@@ -84,6 +89,12 @@ img.icon {
 p.newSection{
   background-color: lightgray;
   font-weight: bold;
+}
+
+p.infoSection{
+  background-color: rgba(0,128,208,0.1);
+  width: 41%;
+  padding:  20px;
 }
 
 .radioform{
@@ -106,8 +117,30 @@ span.dataTip {
   padding-right: 2px;
   vertical-align: middle;
 }
+
+span.inndataRadio{
+  width: 20%;
+  min-width: 150px;
+  display: inline-block;
+  text-align: left;
+  margin-right: 38px;
+  padding: 0px;
+}
+
+
 span.resultSpan {
- text-align: center;
+ text-align: right;
+ padding-right: 42px;
+}
+
+span.units{
+  margin-left: -40px;
+  min-width: 10px;
+  max-width: 30px;
+  color: rgba(128,128, 128, 0.8);;
+}
+strong{
+  font-weight: bold;
 }
 
 .ui-menu {

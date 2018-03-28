@@ -382,19 +382,7 @@ $('#prevNextNav').on("click", ".menuButtonsNext", function(event){
   else if (pos == 2){$( ".navButton7" ).trigger( "click" );$('#menuDescriptionNext').html("");}
 });
 
-jQuery('.info').on('click', function(event){
 
-  if($('#infoDiv' + this.id).is(":visible")){
-    $('#infoDiv' + this.id).slideUp();
-    $('#' + this.id).html("Les mer");
-  }else{
-    $('#infoDiv' + this.id).slideDown();
-    $('#' + this.id).html("Vis mindre");
-  }
-
-
-
-});
 
 
 

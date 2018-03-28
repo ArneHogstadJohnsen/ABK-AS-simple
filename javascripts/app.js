@@ -187,6 +187,9 @@ $(document).ready(function() {
   var energyChart;
   var graphArray = [];
 
+
+
+
   //defines new chart type - including the label of y-axis
   Chart.types.Line.extend({
       name: "LineAlt",
@@ -498,6 +501,29 @@ var createChart = function() {
   }
 });
 
+//Pull All Macihnedata and makke mattrix - sort by nominal capacity - populate dropdown meny
+$.ajax({
+  url: 'index.html',
+  success: function() {
+    // clear current matirux
+    globalMachineArray = [];
+    //retrieving unsorted matrix with all machines
+    var localUnsortedMachineArray = new Firebase('https://sizzling-fire-1319.firebaseio.com/Maskiner');
+
+    localUnsortedMachineArray.orderByChild("nomEffect").on("value", function(snapshot) {
+    //resets LoopCounter to 0 so we get ordered list in dropdpwn meny
+    globalMachineArray = [];
+
+    //Ordering localUnsortedMachineArray by nominal effect
+    localUnsortedMachineArray.orderByChild("nomEffect").on("child_added", function(snapshot) {
+
+    //Add machine to gloval objectArray
+    globalMachineArray.push(snapshot.val());
+    });
+    });
+  }
+});
+
 //function calculating hot water consumption
 var updateHotWater = function () {
   if ($("#area").val() != ""){
@@ -545,7 +571,7 @@ var getGlobalTemperatureArray = function (yearMeanInput,tempDOTinput){
 };
 
 //Function calculating energy use, deilvered energy and energy need - populates GraphArray
-var getEffectAndEnergyDeliveredAndEnergyNeed = function () {
+var getEffectAndEnergyDeliveredAndEnergyNeed = function (effectDOT,heatingFrom,numberMachines) {
   //set global arrays to zero
   globalEffectDelivered = [];
   globalEffectNeed = [];
@@ -554,12 +580,11 @@ var getEffectAndEnergyDeliveredAndEnergyNeed = function () {
   globalEnergyNeed =0;
   globalEnergyUsed =0;
   //define relevant variables for calcualtion
-  var effectDOT = parseFloat($('#buildingEffectNeed').val().replace(',','.'));
-  var heatingFrom = parseFloat($('#buildingHeatingFrom').val().replace(',','.'));
-  var numberMachines = parseFloat($('#numberOfMachines').val());
+//  var effectDOT = parseFloat($('#buildingEffectNeed').val().replace(',','.'));
+//  var heatingFrom = parseFloat($('#buildingHeatingFrom').val().replace(',','.'));
+//  var numberMachines = parseFloat($('#numberOfMachines').val());
   var effectNow = 0;
-  var area = parseFloat($('#buildingBRA').val().replace(',','.'));
-  var effectLast = 0;
+  var effectLast = 0; area
   var temperature = 0;
   var durationNow = 0;
   var durationLast = 0;
@@ -588,7 +613,7 @@ var getEffectAndEnergyDeliveredAndEnergyNeed = function () {
   }
 
   // get relevant machinedata
-  var machineIndex = $('option:selected', '#machines').attr('id');
+  var machineIndex = 1//$('option:selected', '#machines').attr('id');
   var machine = globalMachineArray[machineIndex];
 
   //getting number of children in machine object
@@ -1170,80 +1195,31 @@ jQuery('.submitChart2').on('click',function(event){
 
   //Button genrating graph and global temperatureArray + MachineArray
 jQuery('.submitChart1').on('click',function(event){
-
-  if($('#municipality').val() == "" || $('#municipality').val() !=globalSelectedMunicipality || $('#buildingEffectNeed').val() == "" || $('#buildingHeatingFrom').val() == ""){
-
-    if($('#municipality').val() == "" || $('#municipality').val() !=globalSelectedMunicipality){
-      $("#municipality").css("background-color", "yellow");
-    }else{
-      $("#municipality").css("background-color", "white");
-    }
-    if($('#buildingEffectNeed').val() == ""){
-       $("#buildingEffectNeed").css("background-color", "yellow");
-    }else {
-      $("#buildingEffectNeed").css("background-color", "white");
-    }
-    if($('#buildingHeatingFrom').val() == ""){
-      $("#buildingHeatingFrom").css("background-color", "yellow");
-    }else {
-      $("#buildingHeatingFrom").css("background-color", "white");
-    }
-  } else{
-    $("#resultTextYearMean").html(globalTempMean);
-    $("#resultTextYearMeanUnit").html("&ordmC");
-    $("#resultTextDOT").html(globalTempDOT);
-    $("#resultTextDOTUnit").html("&ordmC");
-    $("#municipality").css("background-color", "white");
-    $("#buildingEffectNeed").css("background-color", "white");
-    $("#buildingHeatingFrom").css("background-color", "white");
-    if($('#buildingStandard').val() == ""){
-      $('#resultTextStandard').html();
-    }
-    if($('#buildingCategory').val() == ""){
-      $('#resultTextBuildingCategory').html();
-    }
-
     getGlobalTemperatureArray(globalTempMean,globalTempDOT);
     getEffectAndEnergyDeliveredAndEnergyNeed();
-    jQuery('#printPart').show();
 
     createChart();
-    legendAppend(globalEnergyNeed, globalEnergyDelivered, globalEnergyUsed);
-
-
-    $('#resultTextHeatPump').html( $('#numberOfMachines').val() );
-    $('#resultTextHeatPump').append(' stk ' + $('#machines').val() );
-    $('#resultTextHeatPumpNomEffect').html(globalMachineNomEffect);
-    $('#resultTextEnergyNeed').html(formatNumberWithThousandSpace(globalEnergyNeed));
-    $('#resultTextEnergyCover').html(Math.round(globalEnergyDelivered/globalEnergyNeed*100));
-    $('#resultTextHeatPumpDeliveredEnergy').html(formatNumberWithThousandSpace(globalEnergyDelivered));
-    $('#resultTextAdditionEffect').html(formatNumberWithThousandSpace(Math.round( (parseFloat($('#buildingEffectNeed').val().replace(',','.')) - globalMachineDeliverDOT ) * 10 )/10)) ;
-    $('#resultTextHeatPumpUsedEnergy').html(formatNumberWithThousandSpace(globalEnergyUsed));
-    $('#resultTextAdditionFrom').html(globalAdditionFrom);
-    $('#resultTextSavedEnergy').html(formatNumberWithThousandSpace(globalEnergyDelivered - globalEnergyUsed));
-    $('#resultTextSCOP').html(Math.round(globalEnergyDelivered/globalEnergyUsed * 100)/100);
-    $('#resultTextAdditionalEnergy').html(formatNumberWithThousandSpace(globalEnergyNeed - globalEnergyDelivered));
-    $('#resultTextSCOPTot').html(Math.round(globalEnergyNeed/(globalEnergyUsed + globalEnergyNeed - globalEnergyDelivered ) * 100)/100);
+    //legendAppend(globalEnergyNeed, globalEnergyDelivered, globalEnergyUsed);
   }
-});
+);
 
 
   // Update values live
-  $('#area').on('input', function() {
-    if(!$(this).val()){$(this).val(0);}
-  //  $('#buildingHotWaterHistoricalEnergy').html(formatNumberWithThousandSpace( 29.8 * $('#buildingBRAHistoricalEnergy').val() ));
-  //  $('#buildingHotWaterHistoricalEnergy').append(' kWh');
+$('#area').on('input', function() {
+  if(!$(this).val()){
+    $(this).val(0);
+  }
   if($('#buildingYear').val() != "" && $('#municipality').val() != "" && $('#area').val() != ""){
-    if ($('#buildingYear').val() <2010){updateHistoricalvalues();}
-    else{updateRegulationFormValues();}
-}
-  //calculating the hot water
+    if ($('#buildingYear').val() <2010){
+      updateHistoricalvalues();
+    }
+    else{
+      updateRegulationFormValues();
+    }
+  }
+  //updates dhw values
   updateHotWater();
-  //inserting the value for BRA in calculation step
-//  $("#buildingBRA").val(this.value);
-//  $("#buildingBRA").trigger("input");
-
-  });
+});
 
 
   // Update values live
@@ -1310,6 +1286,53 @@ $('#yearMeanForCalculation').on('input', function() {
 $('#dOTForCalculation').on('input', function() {
   globalTempDOT = parseFloat($('#dOTForCalculation').val().replace(',','.'));
 });
+
+
+
+
+
+
+
+
+
+
+
+  var options = {
+      series: {
+          lines: { show: true, fill: true, fillColor: "rgba(255, 255, 255, 0.8)" },
+          points: { show: true, fill: false }
+      },
+      yaxis: {
+        max: 1
+      }
+  };
+
+
+$.plot($("#placeholder"), [ [[0, 0], [1, 1]] ], options);
+
+
+getEffectAndEnergyDeliveredAndEnergyNeed(15,12,1);
+
+
+
+
+jQuery('.info').on('click', function(event){
+
+  if($('#infoDiv' + this.id).is(":visible")){
+    $('#infoDiv' + this.id).slideUp();
+    $('#' + this.id).html("Les mer");
+  }else{
+
+
+    $('#infoDiv' + this.id).slideDown();
+    $('#' + this.id).html("Vis mindre");
+  }
+
+
+
+});
+
+
 
 
 //////////////////////////////////// KNAPPPER ///////////////////////////////////////////
@@ -1381,7 +1404,11 @@ jQuery('.inndata').on('input',function(event){
   $('.blink').unblink();
 });
 
-
+jQuery('#sliderRange').on('input',function(event){
+  var slider = document.getElementById("myRange");
+  var output = document.getElementById("sliderVerdi");
+  output.innerHTML = this.value;
+});
 
 
 

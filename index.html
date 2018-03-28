@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/CSS-files/general/reset.css"><link>
   <link rel="stylesheet" href="/CSS-files/general/app.css"></link>
   <link rel="stylesheet" href="/CSS-files/general/buttons.css"></link>
+  <link rel="stylesheet" href="/CSS-files/general/slider.css"></link>
 
   <!-- EXTERNAL SCRIPT FILES-->
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -21,6 +22,8 @@
   <script type="text/javascript" src="/javascripts/generateOffer.js"></script>
   <script type="text/javascript" src="/javascripts/blink.js"></script>
   <script type="text/javascript" src="/javascripts/menuToggling.js"></script>
+  <script type="text/javascript" src="/javascripts/jquery.flot.js"></script>
+
 
 </head>
 
@@ -58,64 +61,64 @@
            <span class="dataTip" data-tip=  "Denne informasjonen er hentet fra v&#229;r klimadatabase. Dersom lokale forhold avviker fra m&#229;lestasjonen vi har brukt kan temperaturen settes manuelt. ">
            <img class="icon"src="/Pictures/question.png">
            </span>
-           <button class="info" id="1">Les mer</button>
+           <button class="info" id="1" tabindex="-1">Les mer</button>
       </p>
-      <p id="infoDiv1" class="infoSection" hidden>
+      <div id="infoDiv1" class="infoSection" hidden>
         &Aringrsmiddeltemperatur er middeltemperaturen gjennom et kalender&aringr p&aring et gitt sted.<br>
         Vi bruker offentlige tilgjengelige data fra m&aringlestasjoner i hele landet. <br>
         I omr&aringder hvor det er flere m&aringlestasjoner har vi brukt gjennomsnittsverdier for alle stasjoner p&aring 'normal' h&oslashyde.<br>
         I dette ligger det at vi har ignorert verdier fra stasjoner p&aring fjelltopper og liknende. <br>
         I tilfellet du har gode tall p&aring lokale data kan du endre verdien manuelt.
-      </p>
+      </div>
       <p id="DUT" >
          <span>Dimensjonerede utetemperatur</span>
            <input class="inndata" id="DUTverdi" onClick="this.select()"><span class="units">&degC</span>
            <span class="dataTip" data-tip=  "Denne informasjonen er hentet fra v&#229;r klimadatabase. Dersom lokale forhold avviker fra m&#229;lestasjonen vi har brukt kan temperaturen settes manuelt. ">
            <img class="icon"src="/Pictures/question.png">
            </span>
-           <button class="info" id="2">Les mer</button>
+           <button class="info" id="2" tabindex="-1">Les mer</button>
       </p>
-      <p id="infoDiv2" class="infoSection" hidden>
+      <div id="infoDiv2" class="infoSection" hidden>
         Dimensjonerende Utend&oslashrs Temperatur (DUT) er den laveste temperaturen i l&oslashpet av et normalt kalender&aringr.<br>
         DUT er ikke den laveste temperaturen man kan oppleve, men, som navnet tilsier, den laveste utend&oslashrs temperaturen man dimensjonerer anlegget for. <br>
         Man b&oslashr alltid ta ut et anlegg som vil kunne beskjeftige effektbehovet ogs&aring n&aringr temperaturer faller under DUT.<br>
         Det er ikke hensiktsmessig &aring dimensjonere varmepumper for temperaturer lavere enn DUT, da man fort ender med overdimensjonert anlegg.<br>
         Varmepumpe + spisslast skal dimensjoneres for &aring kunne dekke effektbehovet den kaldeste dagen i &aringret, uten internlaster.<br>
-      </p>
+      </div>
       <p>
         <span> Oppvarmet areal (BRA):</span>
         <input class="inndata" id="area" onClick="this.select()"><span class="units">m&sup2</span>
         <span class="dataTip" data-tip=  "Alt bruksareal inkluderes i oppvarmet areal, selv om det periodevis holdes ved lavere temperatur. Dette inkluderer f.eks soverom ">
         <img class="icon"src="/Pictures/question.png">
         </span>
-        <button class="info" id="3">Les mer</button>
+        <button class="info" id="3" tabindex="-1">Les mer</button>
       </p>
-      <p id="infoDiv3" class="infoSection" hidden>
+      <div id="infoDiv3" class="infoSection" hidden>
         BRA er et byggs bruksareal.<br>
         Bruksarealet er definert som alt areal som ligger innenfor omsluttende vegger, inkludert innvendige vegger. <br>
         Omsluttende vegger er mao yttervegger / vegg mot nabobygg. <br>
         Her er vi ute etter det oppvarmede bruksarealet. Dette inkluderer soverom.
-      </p>
+      </div>
       <p>
          <span>Bygge&aringr:</span>
            <input class="inndata" id="buildingYear" onClick="this.select()"><span class="units"></span>
          <span class="dataTip" data-tip=  "Dette brukes for &aring estimere standarden til bygget. Ved eksisterende bygg som har blitt rehabilitert bruker du dato for rehabiliteringen ">
          <img class="icon"src="/Pictures/question.png">
          </span>
-         <button class="info" id="4">Les mer</button>
+         <button class="info" id="4" tabindex="-1">Les mer</button>
       </p>
-      <p id="infoDiv4" class="infoSection" hidden>
-        Lorem Ipsmun
-      </p>
+      <div id="infoDiv4" class="infoSection" hidden>
+        Lorem Idivsmun
+      </div>
       <p id="balanseTemp">
          <span>Balansetemperatur:</span>
            <input class="inndata" id="balanseTempVerdi" onClick="this.select()"><span class="units">&degC</span>
            <span class="dataTip" data-tip=  "Balansetemperatur vuderes som funksjon av byggestandard/bygge&#229;r. Denne verdien settes automatisk og er basert p&aring innend&#248;rs temperatur 21 &#176;C. Ved h&#248;yere innend&#248;rs temperatur kan denne parallellforskyves.">
            <img class="icon"src="/Pictures/question.png">
            </span>
-           <button class="info" id="5">Les mer</button>
+           <button class="info" id="5" tabindex="-1">Les mer</button>
       </p>
-      <p id="infoDiv5" class="infoSection" hidden>
+      <div id="infoDiv5" class="infoSection" hidden>
         Balansetemperatur er den utend&oslashrs temperaturen hvor byggets internlaster og varmetap uligner hverandre. Mao byggets "nullpunkt". <br>
         Desto bedre isolert et bygg er, desto lavere vil balansetemperaturen v&aeligre.<br>
         Merk at det kun er byggets effektbehov til <strong>romoppvarming</strong> som p&aringvirkes av balansetemperaturen. <br><br>
@@ -123,14 +126,34 @@
         Den flate linjen lengst til h&oslashyre i kurven viser det utjevnede effektbehovet til tappevann, dette er konstant over &aringret.
         <br><br>
         <img class= "infoPic" src="/Pictures/Balansetemperatur.JPG">
+        <div id="placeholder" style="width:600px;height:300px" ></div>
+        <p class="slidecontainer">
+          Nedenfor kan du endre balansetemperaturen for et tenkt tilfelle.
+          <input type="range" min="3" max="21" value="12" class="slider" id="sliderRange">
+          <span id="sliderVerdi"style="text-align: right; width:50%;">12</span><span>&degC</span>
+        </p>
         <br><br>
         I dette verkt&oslashyet estimerer vi f&oslashrst energibehovet, og regner oss tilbake til effektbehovet.
         Balansetemperaturen er ekstremt avgj&oslashrende for beregningen. <br><br>
         Kurven ovenfor viser effektbehov som en funksjon av varighet, fra kaldest til varmest.
         Arealet under grafen er det totale energibehovet. Ved &aring flytte balansetemperaturen lavere vil effektbehovet &oslashke.
-        Dette er som en f&oslashlge av at arealet under grafen holdes konstant. Ved lavere balansetemperatur f&aringr vi kortere varighet p&aring oppvarmingen, og dermed m&aring effektbehovet stige.
-
-      </p>
+        Dette er som en f&oslashlge av at arealet under grafen holdes konstant. Ved lavere balansetemperatur f&aringr vi kortere varighet p&aring oppvarmingen.
+        Ettersom det samme energibehovet skal fordeles p&aring f&aeligrre d&oslashgn vil effektbehovet stige.
+        <br>
+        Typiske balansetemperaturer fra bygge&aringr:
+        <br><br>
+        <span class="listSpan">&bullet; Etter 2015</span><span class="listSpan">10 &degC</span><br>
+        <span class="listSpan">&bullet; 2010 - 2015</span><span class="listSpan">12 &degC</span><br>
+        <span class="listSpan">&bullet; 2000 - 2010</span><span class="listSpan">13 &degC</span><br>
+        <span class="listSpan">&bullet; 1990 - 2000</span><span class="listSpan">14 &degC</span><br>
+        <span class="listSpan">&bullet; 1980 - 1990</span><span class="listSpan">15 &degC</span><br>
+        <span class="listSpan">&bullet; 1970 - 1980</span><span class="listSpan">16 &degC</span><br>
+        <span class="listSpan">&bullet; F&oslashr 1970</span><span class="listSpan">17 &degC</span><br>
+        <br><br>
+        De typiske balansetemperaturene ovenfor er estimater, og baserer seg p&aring innend&oslashrs temperatur rundt 21 &degC.<br>
+        Dersom innend&oslashrs temperatur er h&oslashyere/lavere enn 21 &degC kan balansetemperaturen parallellforskyves likt antall grader for et bedre estimat.<br>
+        Merk ogs&aring at forhold som vindutsatt bolig vil heve balansetemperaturen, da varmetap vil &oslashke .
+      </div>
       <p>
         <span >Tappevann:<br><br><br>
          </span>
@@ -174,33 +197,33 @@
            <span class="dataTip" data-tip=  "Denne verdien brukes for &aring estimere effektbehov ved DUT. Husk at husholdningsgjenstander m&aring trekkes fra hovedm&#229;ler, bruk 60% av total til oppvarming og inkluder ytterligere 10% om tappevann skal dekkes av varmepumpe">
            <img class="icon"src="/Pictures/question.png">
            </span>
-           <button class="info" id="6">Les mer</button>
+           <button class="info" id="6" tabindex="-1">Les mer</button>
       </p>
-      <p id="infoDiv6" class="infoSection" hidden>
+      <div id="infoDiv6" class="infoSection" hidden>
         Lorem Ipsmun
-      </p>
+      </div>
       <p>
          <span>Oljeforbruk</span>
            <input class="inndata" id="historiskForbruk" onClick="this.select()"><span class="units">m&sup3</span>
            <span class="dataTip" data-tip=  "Denne verdien brukes for &aring estimere effektbehov ved DUT. Husk at husholdningsgjenstander m&aring trekkes fra hovedm&#229;ler, bruk 60% av total til oppvarming og inkluder ytterligere 10% om tappevann skal dekkes av varmepumpe">
            <img class="icon"src="/Pictures/question.png">
            </span>
-           <button class="info" id="7">Les mer</button>
+           <button class="info" id="7" tabindex="-1">Les mer</button>
       </p>
-      <p id="infoDiv7" class="infoSection" hidden>
+      <div id="infoDiv7" class="infoSection" hidden>
         Lorem Ipsmun
-      </p>
+      </div>
       <p>
          <span>Vedfyring</span>
            <input class="inndata" id="historiskForbruk" onClick="this.select()"><span class="units">m&sup3</span>
            <span class="dataTip" data-tip=  "Denne verdien brukes for &aring estimere effektbehov ved DUT. Husk at husholdningsgjenstander m&aring trekkes fra hovedm&#229;ler, bruk 60% av total til oppvarming og inkluder ytterligere 10% om tappevann skal dekkes av varmepumpe">
            <img class="icon"src="/Pictures/question.png">
            </span>
-           <button class="info" id="8">Les mer</button>
+           <button class="info" id="8" tabindex="-1">Les mer</button>
       </p>
-      <p id="infoDiv8" class="infoSection" hidden>
+      <div id="infoDiv8" class="infoSection" hidden>
         Lorem Ipsmun
-      </p>
+      </div>
       <p>
         <br>
         <span></span><span class="resultSpan" ><button class="estimer">BEREGN</button></span>

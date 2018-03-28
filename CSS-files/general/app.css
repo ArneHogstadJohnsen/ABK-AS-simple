@@ -30,6 +30,13 @@ body > section {
   padding: 10px;
 }
 
+div.infoSection{
+  background-color: rgba(0,128,208,0.1);
+  width: 41%;
+  padding:  20px;
+}
+
+
 div.navigationBand{
   height: 4%;
   width: 80%;
@@ -91,12 +98,6 @@ p.newSection{
   font-weight: bold;
 }
 
-p.infoSection{
-  background-color: rgba(0,128,208,0.1);
-  width: 41%;
-  padding:  20px;
-}
-
 .radioform{
   display: inline-block;
 }
@@ -125,6 +126,10 @@ span.inndataRadio{
   text-align: left;
   margin-right: 38px;
   padding: 0px;
+}
+
+span.listSpan{
+  margin-left: 20px;
 }
 
 

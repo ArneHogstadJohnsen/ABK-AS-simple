@@ -334,35 +334,15 @@ var createChart = function() {
       var index = 0;
       globalMachineArray = [];
 
-      //Add number of machines in dropdown menu
-      for (i = 2; i <10 ; i++){
-      $('#numberOfMachines').append($('<option>' + i + '</option>'));
-      $('#offerNumberOfMachine').append($('<option>' + i + '</option>'));
-      }
-
-
       //Ordering localUnsortedMachineArray by nominal effect
       localUnsortedMachineArray.orderByChild("nomEffect").on("child_added", function(snapshot) {
 
       //Add machine to gloval objectArray
       globalMachineArray.push(snapshot.val());
-      if ( loopCounter == 0){
-        //Clear current values in dropdonmenu
-        $('#machines').html("Loading");
-        $('#offerMachine').html("Loading");
-        $('#offerMachineInside').html("Loading");
-        $('#offerMachineInside').append($('<option >BTP-E</option>'));
-      }
-      // Popluate dropdown menu and giv ID to all machines
-      $('#machines').append($('<option id=' + index + '>' + snapshot.val().name + '</option>'));
-      // Popluate offermenu and giv ID to all machines
-      $('#offerMachine').append($('<option id=' + index + '>' + snapshot.val().name + '</option>'));
-      // Increment index and loopCounter values to increase ID nummber and stom texptreplacement
       index++;
       loopCounter++;
       });
       });
-
     }
   });
 
@@ -570,8 +550,10 @@ var getGlobalTemperatureArray = function (yearMeanInput,tempDOTinput){
  }
 };
 
+
 //Function calculating energy use, deilvered energy and energy need - populates GraphArray
-var getEffectAndEnergyDeliveredAndEnergyNeed = function (effectDOT,heatingFrom,numberMachines) {
+var getEffectAndEnergyDeliveredAndEnergyNeed = function () {
+
   //set global arrays to zero
   globalEffectDelivered = [];
   globalEffectNeed = [];
@@ -580,11 +562,14 @@ var getEffectAndEnergyDeliveredAndEnergyNeed = function (effectDOT,heatingFrom,n
   globalEnergyNeed =0;
   globalEnergyUsed =0;
   //define relevant variables for calcualtion
-//  var effectDOT = parseFloat($('#buildingEffectNeed').val().replace(',','.'));
-//  var heatingFrom = parseFloat($('#buildingHeatingFrom').val().replace(',','.'));
-//  var numberMachines = parseFloat($('#numberOfMachines').val());
+  //var effectDOT = parseFloat($('#buildingEffectNeed').val().replace(',','.'));
+  //var heatingFrom = parseFloat($('#buildingHeatingFrom').val().replace(',','.'));
+  var numberMachines = 1;//parseFloat($('#numberOfMachines').val());
   var effectNow = 0;
-  var effectLast = 0; area
+  var heatingFrom = 12;
+  var effectDOT = 12;
+  //var area = parseFloat($('#buildingBRA').val().replace(',','.'));
+  var effectLast = 0;
   var temperature = 0;
   var durationNow = 0;
   var durationLast = 0;
@@ -613,7 +598,7 @@ var getEffectAndEnergyDeliveredAndEnergyNeed = function (effectDOT,heatingFrom,n
   }
 
   // get relevant machinedata
-  var machineIndex = 1//$('option:selected', '#machines').attr('id');
+  var machineIndex = 3;
   var machine = globalMachineArray[machineIndex];
 
   //getting number of children in machine object
@@ -734,15 +719,17 @@ var getEffectAndEnergyDeliveredAndEnergyNeed = function (effectDOT,heatingFrom,n
   graphArray.push(graphEffectUse);
 };
 
+
 //Function calculating energy use, deilvered energy and energy need - populates GraphArray
-var getEffectFromEnergy = function () {
+var getEffectFromEnergy = function (energiforbruk, balansetemperatur) {
   //defining necessary variables
   var localEnergyNeed = 0;
 
   //retrieving relevant variables for calcualtion
-  var effectDOT = Math.round(parseFloat($('#historiskForbruk').val().replace(',','.'))/2000);
-  var heatingFrom = parseFloat($('#balanseTempVerdi').val().replace(',','.'));
-  var reportedEnergyNeed = parseFloat($('#historiskForbruk').val().replace(',','.'));
+  var effectDOT = energiforbruk/2000;
+  var heatingFrom = balansetemperatur;
+
+  var reportedEnergyNeed = energiforbruk;
   var area = parseFloat($('#area').val());
   var tappevannForbruk = Math.floor(globalDHW * area);
   var tappevannEffekt = Math.round(tappevannForbruk *10/(365*24))/10;
@@ -1134,7 +1121,9 @@ var updateHistoricalvalues = function (){
 
 var updateEffectValues = function (){
   var area = parseFloat($('#area').val().replace(',','.'));
-  var totEffect = getEffectFromEnergy();
+  var histForbruk = parseFloat($('#historiskForbruk').val().replace(',','.'));
+  var balTemp = parseFloat($('#balanseTempVerdi').val().replace(',','.'));
+  var totEffect = getEffectFromEnergy(Math.round(histForbruk,balTemp));
   var dhWEffect = Math.round(globalDHW*area/(365*24)*10)/10;
   $('#effecFromEnergyValue').html(totEffect);
   //inserting the value for effect in calculation step
@@ -1145,7 +1134,88 @@ var updateEffectValues = function (){
 
 
   //$("#buildingEffectNeed").trigger("input");
-}
+};
+
+var exampleGraphEffectCalc = function (){
+
+  var energibehov = 20000;
+  var heatingFrom = parseFloat($('#sliderRange').val());
+  var effectDOT = getEffectFromEnergy(energibehov,heatingFrom);
+  exampleEffectNeed = [];
+  var effectNow = 0;
+  var effectLast = 0;
+  var temperature = 0;
+  var durationNow = 0;
+  var durationLast = 0;
+  var temperatureLast= globalTempDOT;
+  graphExampleTime = [];
+  graphExampleEffectNeed = [];
+  graphExampleArray = [];
+
+  //defines new durationarray and the array for grahing
+  var localDurationArray = [];
+  for (var i = 0; i < 366 ; i++){
+      localDurationArray.push(i)
+  }
+
+  //defines new outdoor temperatureArray
+  var localTemperatureArray = [];
+  localTemperatureArray.push(globalTempDOT);
+  var n = 0;
+  for (var i = 1; i < localDurationArray.length; i++){
+    while (n < globalDurationArray.length && localDurationArray[i] > globalDurationArray[n]) {
+      n++;
+    }
+    localTemperatureArray.push(Math.round(((localDurationArray[i] - globalDurationArray[n-1]) * (globalTemperatureArray[n] - globalTemperatureArray[n-1])/(globalDurationArray[n] - globalDurationArray[n-1]) + globalTemperatureArray[n-1])*10)/10);
+  }
+
+  //variables for calculation
+  var counter = 0;
+
+  //calculate the effectNeed and energyNeed
+  for (var i=0; i < localDurationArray.length; i++){
+
+
+    temperature = localTemperatureArray[i];
+    durationNow = localDurationArray[i];
+
+    if( temperature > heatingFrom ){
+      effectNow = 0;
+    }else{
+      effectNow = effectDOT * ((temperature - heatingFrom) / ( globalTempDOT - heatingFrom ));
+    }
+    exampleEffectNeed.push(Math.round(effectNow*100)/100);
+    effectLast = effectNow;
+    counter++;
+  }
+  //Now that we have all numbers, we define the graph
+  var graphExampleTime = [];
+  var graphExampleEffectNeed = [];
+
+  graphArray = [];
+  for ( i = 0; i < 37 ; i++){
+    graphArray.push(i*10, exampleEffectNeed[i*10]);
+    graphExampleEffectNeed.push(exampleEffectNeed[i*10]);
+  }
+  graphArray.push(365,0);
+
+  var grafMax = effectDOT*1.4;
+
+  var options = {
+      series: {
+          lines: { show: true, fill: true, fillColor: "rgba(255, 255, 255, 0.8)" },
+          points: { show: true, fill: false }
+      },
+      yaxis: {
+        max: grafMax
+      }
+  };
+
+
+  $.plot($("#placeholder"), [ graphArray ], options);
+
+
+};
 
 //Functions for when domestic hot water radio buttons is selected
 jQuery('input:radio[name="forbruk"]').on('change',function(event){
@@ -1297,26 +1367,17 @@ $('#dOTForCalculation').on('input', function() {
 
 
 
-  var options = {
-      series: {
-          lines: { show: true, fill: true, fillColor: "rgba(255, 255, 255, 0.8)" },
-          points: { show: true, fill: false }
-      },
-      yaxis: {
-        max: 1
-      }
-  };
 
 
-$.plot($("#placeholder"), [ [[0, 0], [1, 1]] ], options);
-
-
-getEffectAndEnergyDeliveredAndEnergyNeed(15,12,1);
 
 
 
 
 jQuery('.info').on('click', function(event){
+
+  if( this.id == 5){
+    exampleGraphEffectCalc();
+  }
 
   if($('#infoDiv' + this.id).is(":visible")){
     $('#infoDiv' + this.id).slideUp();

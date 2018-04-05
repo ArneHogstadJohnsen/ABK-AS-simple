@@ -148,7 +148,7 @@ $(document).ready(function() {
   var globalMunicipalityArray = [];
   var globalTempMean = 6;
   var globalTempDOT= -20;
-  var climateZoneIndex = 0;
+  var climateZoneIndex = 1;
   var globalEffectDelivered = [];
   var globalEffectNeed = [];
   var globalEffectUsed = [];
@@ -165,17 +165,7 @@ $(document).ready(function() {
   var globalVarmtvann = [];
   var globalVentilasjon = [];
   var globalDegreeDays = 0;
-  var globalCeilingEffect = 0;
-  var globalFloorEffect = 0;
-  var globalWindowEffect = 0 ;
-  var globalFacadeEffect = 0;
-  var globalSumTransmissionEffect = 0;
-  var globalFormDOT = -20;
-  var globalFormIndoor = 21;
-  var globalVentilationHPEffect = 0;
-  var globalInfiltrationEffect = 0;
-  var globalSumEffect = 0;
-  var globaltempafterThermalWheel = 8.7;
+
   var globalNomrtall = [];
   var globalMachineDeliverDOT = 0;
   var globalAdditionFrom = 0;
@@ -721,17 +711,15 @@ var getEffectAndEnergyDeliveredAndEnergyNeed = function () {
 
 
 //Function calculating energy use, deilvered energy and energy need - populates GraphArray
-var getEffectFromEnergy = function (energiforbruk, balansetemperatur) {
+var getEffectFromEnergy = function (energiforbruk, balansetemperatur, areal) {
   //defining necessary variables
   var localEnergyNeed = 0;
 
   //retrieving relevant variables for calcualtion
   var effectDOT = energiforbruk/2000;
   var heatingFrom = balansetemperatur;
-
   var reportedEnergyNeed = energiforbruk;
-  var area = parseFloat($('#area').val());
-  var tappevannForbruk = Math.floor(globalDHW * area);
+  var tappevannForbruk = Math.floor(globalDHW * areal);
   var tappevannEffekt = Math.round(tappevannForbruk *10/(365*24))/10;
   var effectNow = 0;
   var effectLast = 0;
@@ -741,7 +729,6 @@ var getEffectFromEnergy = function (energiforbruk, balansetemperatur) {
   var temperatureLast = globalTempDOT;
 
   reportedEnergyNeed = reportedEnergyNeed - tappevannForbruk;
-
   if (reportedEnergyNeed > 0) {
   //defines new durationarray and the array for grahing
   var localDurationArray = [];
@@ -798,6 +785,7 @@ var getEffectFromEnergy = function (energiforbruk, balansetemperatur) {
   }
 
   return (Math.round(10 * (effectDOT +tappevannEffekt))/10);
+
   }
   return 0;
 };
@@ -1123,7 +1111,7 @@ var updateEffectValues = function (){
   var area = parseFloat($('#area').val().replace(',','.'));
   var histForbruk = parseFloat($('#historiskForbruk').val().replace(',','.'));
   var balTemp = parseFloat($('#balanseTempVerdi').val().replace(',','.'));
-  var totEffect = getEffectFromEnergy(Math.round(histForbruk,balTemp));
+  var totEffect = getEffectFromEnergy(histForbruk, balTemp, area);
   var dhWEffect = Math.round(globalDHW*area/(365*24)*10)/10;
   $('#effecFromEnergyValue').html(totEffect);
   //inserting the value for effect in calculation step
@@ -1138,9 +1126,11 @@ var updateEffectValues = function (){
 
 var exampleGraphEffectCalc = function (){
 
+  getGlobalTemperatureArray(globalTempMean,globalTempDOT);
+
   var energibehov = 20000;
   var heatingFrom = parseFloat($('#sliderRange').val());
-  var effectDOT = getEffectFromEnergy(energibehov,heatingFrom);
+  var effectDOT = getEffectFromEnergy(energibehov,heatingFrom, 1);
   exampleEffectNeed = [];
   var effectNow = 0;
   var effectLast = 0;
@@ -1192,28 +1182,53 @@ var exampleGraphEffectCalc = function (){
   var graphExampleTime = [];
   var graphExampleEffectNeed = [];
 
-  graphArray = [];
-  for ( i = 0; i < 37 ; i++){
-    graphArray.push(i*10, exampleEffectNeed[i*10]);
-    graphExampleEffectNeed.push(exampleEffectNeed[i*10]);
+  for ( i = 0; i < 74 ; i++){
+    graphExampleTime.push(i*5);
+    graphExampleEffectNeed.push(exampleEffectNeed[i*5]);
   }
-  graphArray.push(365,0);
+  graphExampleTime.push(365);
+  graphExampleEffectNeed.push(0);
 
   var grafMax = effectDOT*1.4;
 
   var options = {
       series: {
-          lines: { show: true, fill: true, fillColor: "rgba(255, 255, 255, 0.8)" },
-          points: { show: true, fill: false }
-      },
+          lines: {
+            show: true,
+            fill: true,
+            fillColor: {
+              colors: [
+                { opacity: 0.3 }, { opacity: 1}
+              ]}
+            },
+          points: { show: false,
+            fill: false
+          }},
       yaxis: {
-        max: grafMax
-      }
+        max: 15
+      },
+      legend: {
+        backgroundOpacity: 0,
+      },
+       colors: ["#0022FF"],
   };
+    var data = new Array(74);
+    for (var i = 0; i < 74; i++) {
+      data[i] = new Array(2);
+    }
+    for (var j = 0; j < 74; j++) {
+      data[j][0] = graphExampleTime[j];
+      data[j][1] = graphExampleEffectNeed[j];
+    }
 
+var dataset = [
+    {
+        label: "Effekt- varighetskurve",
+        data: data
+    }
+];
 
-  $.plot($("#placeholder"), [ graphArray ], options);
-
+  var plot = $.plot($("#placeholder"), dataset, options);
 
 };
 
@@ -1375,9 +1390,7 @@ $('#dOTForCalculation').on('input', function() {
 
 jQuery('.info').on('click', function(event){
 
-  if( this.id == 5){
-    exampleGraphEffectCalc();
-  }
+
 
   if($('#infoDiv' + this.id).is(":visible")){
     $('#infoDiv' + this.id).slideUp();
@@ -1389,7 +1402,9 @@ jQuery('.info').on('click', function(event){
     $('#' + this.id).html("Vis mindre");
   }
 
-
+  if( this.id == 5){
+    exampleGraphEffectCalc();
+  }
 
 });
 
@@ -1469,6 +1484,7 @@ jQuery('#sliderRange').on('input',function(event){
   var slider = document.getElementById("myRange");
   var output = document.getElementById("sliderVerdi");
   output.innerHTML = this.value;
+  exampleGraphEffectCalc();
 });
 
 

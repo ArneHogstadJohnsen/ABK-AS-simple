@@ -1109,17 +1109,29 @@ var updateHistoricalvalues = function (){
 
 var updateEffectValues = function (){
   var area = parseFloat($('#area').val().replace(',','.'));
-  var histForbruk = parseFloat($('#historiskForbruk').val().replace(',','.'));
+  var histForbruk = 0;
+
+  if( $('#historiskForbruk').val() != "" ){
+     histForbruk = histForbruk + parseFloat($('#historiskForbruk').val().replace(',','.'));
+  }
+  if( $('#historiskForbrukOlje').val() != "" ){
+     histForbruk = histForbruk + 0.8*10000*parseFloat($('#historiskForbrukOlje').val().replace(',','.'));
+  }
+  if( $('#historiskForbrukVed').val() != "" ){
+     histForbruk = histForbruk + 0.75*2050*parseFloat($('#historiskForbrukVed').val().replace(',','.'));
+  }
   var balTemp = parseFloat($('#balanseTempVerdi').val().replace(',','.'));
   var totEffect = getEffectFromEnergy(histForbruk, balTemp, area);
   var dhWEffect = Math.round(globalDHW*area/(365*24)*10)/10;
+  console.log(histForbruk);
+
   $('#effecFromEnergyValue').html(totEffect);
   //inserting the value for effect in calculation step
   $("#effektBehovUtdata").html(totEffect + ' kW');
   $("#effektBehovSpesifikkUtdata").html( Math.round((totEffect - dhWEffect)*1000/area*10)/10 + ' W/m&sup2');
   $("#effektBehovRomUtdata").html(Math.round((totEffect - dhWEffect)*10)/10 + ' kW');
   $("#effektBehovTappevannUtdata").html( dhWEffect + ' kW');
-
+  $("#energibehovUtdata").html(formatNumberWithThousandSpace(histForbruk) + " kWh");
 
   //$("#buildingEffectNeed").trigger("input");
 };
@@ -1317,13 +1329,28 @@ $('#area').on('input', function() {
 
   // Update values live
   $('#historiskForbruk').on('input', function() {
-      $("#energibehovUtdata").html(formatNumberWithThousandSpace(this.value) + " kWh");
+
     if ( $("#balanseTempVerdi").val() != "" && $("#municipality").val() != ""){
       getGlobalTemperatureArray(globalTempMean,globalTempDOT);
       updateEffectValues();
     }
   });
+  // Update values live
+  $('#historiskForbrukOlje').on('input', function() {
 
+    if ( $("#balanseTempVerdi").val() != "" && $("#municipality").val() != ""){
+      getGlobalTemperatureArray(globalTempMean,globalTempDOT);
+      updateEffectValues();
+    }
+  });
+  // Update values live
+  $('#historiskForbrukVed').on('input', function() {
+
+    if ( $("#balanseTempVerdi").val() != "" && $("#municipality").val() != ""){
+      getGlobalTemperatureArray(globalTempMean,globalTempDOT);
+      updateEffectValues();
+    }
+  });
 
   // Update values live
   $('#balanseTempVerdi').on('input', function() {
@@ -1453,13 +1480,15 @@ var effectCheck = function(){
 
 
 jQuery('.estimer').on('click',function(event){
-  if ($('#historiskForbruk').val() != "" && $('#municipality').val() != ""  && $('#buildingYear').val() != "" && $('#area').val() != ""){
+  if (($('#historiskForbruk').val() != "" || $('#historiskForbrukOlje').val() != "" || $('#historiskForbrukVed').val() != "" ) && $('#municipality').val() != ""  && $('#buildingYear').val() != "" && $('#area').val() != ""){
   effectCheck();
   $('.outputArea').slideDown("slow");
   }
   else {
-    if ($('#historiskForbruk').val() == ""){
+    if ($('#historiskForbruk').val() == "" && $('#historiskForbrukOlje').val() == "" && $('#historiskForbrukVed').val() == ""){
       $('#historiskForbruk').css("background-color", "yellow");
+      $('#historiskForbrukOlje').css("background-color", "yellow");
+      $('#historiskForbrukVed').css("background-color", "yellow");
     }
     if ($('#municipality').val() == ""){
       $('#municipality').css("background-color", "yellow");
@@ -1476,6 +1505,12 @@ jQuery('.estimer').on('click',function(event){
 jQuery('.inndata').on('input',function(event){
 
   $(this).css("background-color", "white");
+
+  if ( $(this).attr('id') == "historiskForbruk" || $(this).attr('id') == "historiskForbrukOlje" || $(this).attr('id') == "historiskForbrukVed"){
+    $('#historiskForbruk').css("background-color", "white");
+    $('#historiskForbrukOlje').css("background-color", "white");
+    $('#historiskForbrukVed').css("background-color", "white");
+  }
   $('.outputArea').slideUp();
   $('.blink').unblink();
 });

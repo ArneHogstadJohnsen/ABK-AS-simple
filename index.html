@@ -108,7 +108,14 @@
          <button class="info" id="4" tabindex="-1">Les mer</button>
       </p>
       <div id="infoDiv4" class="infoSection" hidden>
-        Lorem Idivsmun
+        Bygge&aringr brukes som et kjapt estimat av byggets standard. Dersom du legger inn en verdi i denne cellen vil 'Balansetemperatur' velges automatisk.<br>
+        Ettersom bygge&aringr er et estimat p&aring byggets standard er det viktig &aring legge inn &aringret som er representativt for byggningskroppen. <br>
+        Mao vil et bygg fra 1920 som ble totalrehabilitert i 1990 f&oslashres med bygge&aringr 1990. <br>
+        I tilfeller hvor kun deler av byggningskroppen er forbedret kan man sette en mellomverdi. <br>
+        Les mer om balansetemperatur nedenfor, her kan dere ogs&aring finne typiske verdier p&aring balansetemperatur som funksjon av bygge&aringr<br><br>
+
+        I tillegg til &aring sette 'Balansetemperatur' definerer bygge&aringret hvilken forbrukstabell vi bruker for &aring estimere energibehovet.<br>
+
       </div>
       <p id="balanseTemp">
          <span>Balansetemperatur:</span>
@@ -133,7 +140,8 @@
         <p class="slidecontainer">
           Nedenfor kan du endre balansetemperaturen for et tenkt tilfelle. <br>
           Energibehovet holdes konstant. <br>
-          Legg merke til hvordan balansetemperaturen p&aringvirker effektbehovet ved DUT<br><br>
+          Legg merke til hvordan balansetemperaturen p&aringvirker effektbehovet ved DUT.<br>
+          Effektbehovet ved DUT er grafens h&oslashyde helt til venstre i diagrammet<br><br>
           <input type="range" min="7" max="17" value="12" class="slider" id="sliderRange">
           <span id="sliderVerdi"style="text-align: right; width:50%;">12</span><span>&degC</span>
         </p>
@@ -205,29 +213,40 @@
            <button class="info" id="6" tabindex="-1">Les mer</button>
       </p>
       <div id="infoDiv6" class="infoSection" hidden>
-        Lorem Ipsmun
+        Her f&oslashres &aringrlig energiebhov for romoppvarming og tappevann.<br>
+        Dersom det brukes energiforbruk fra hovedm&aringler m&aring man trekke fra energibehov til husholdningsgjenstander (belysning, tv, kj&oslashleskap etc.)<br>
+        En tommelfingerregel er at omtrentlig 70% av alt energiforbruk i et helelektrisk hjem g&aringr til oppvarming.<br>
+        Multipliser i s&aring fall avleste energimengde med 0.7<br><br>
+
+        Dersom det brukes normtall i stedet for historisk energiforbruk er det summen ved 'Totalt energibehov normtall' som skal brukes. <br>
+        Merk at energibehov for prosuksjon av tappevann hentes automatisk fra 'Normtall tappevannsforbruk'. <br>
+        I tilfellet tappevann ikke skal inkluderes m&aring man huke av for 'Ingenting'.
       </div>
       <p>
          <span>Oljeforbruk</span>
-           <input class="inndata" id="historiskForbruk" onClick="this.select()"><span class="units">m&sup3</span>
+           <input class="inndata" id="historiskForbrukOlje" onClick="this.select()"><span class="units">m&sup3</span>
            <span class="dataTip" data-tip=  "Denne verdien brukes for &aring estimere effektbehov ved DUT. Husk at husholdningsgjenstander m&aring trekkes fra hovedm&#229;ler, bruk 60% av total til oppvarming og inkluder ytterligere 10% om tappevann skal dekkes av varmepumpe">
            <img class="icon"src="/Pictures/question.png">
            </span>
            <button class="info" id="7" tabindex="-1">Les mer</button>
       </p>
       <div id="infoDiv7" class="infoSection" hidden>
-        Lorem Ipsmun
+        Legg inn &aringrlig oljeforbuk i m&sup3 (1 m&sup3 = 1000 L). <br>
+        Det antas en virkningsgrad p&aring 80% i v&aringr beregning.<br>
+        Dersom det er en annen virkningsgrad p&aring din gjeldende oljekjel, som fraviker betraktelig, kan dere manuelt korrigere inndataen.
       </div>
       <p>
          <span>Vedfyring</span>
-           <input class="inndata" id="historiskForbruk" onClick="this.select()"><span class="units">m&sup3</span>
+           <input class="inndata" id="historiskForbrukVed" onClick="this.select()"><span class="units">m&sup3</span>
            <span class="dataTip" data-tip=  "Denne verdien brukes for &aring estimere effektbehov ved DUT. Husk at husholdningsgjenstander m&aring trekkes fra hovedm&#229;ler, bruk 60% av total til oppvarming og inkluder ytterligere 10% om tappevann skal dekkes av varmepumpe">
            <img class="icon"src="/Pictures/question.png">
            </span>
            <button class="info" id="8" tabindex="-1">Les mer</button>
       </p>
       <div id="infoDiv8" class="infoSection" hidden>
-        Lorem Ipsmun
+        Legg inn &aringrlig vedforbruk i m&sup3 (1 m&sup3 = 1000 L). <br>
+        Det antas en virkningsgrad p&aring 75% i v&aringr beregning.<br>
+        Dersom det er en annen virkningsgrad p&aring din gjeldende vedovn, som fraviker betraktelig, kan dere manuelt korrigere inndataen.
       </div>
       <p>
         <br>

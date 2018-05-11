@@ -32,16 +32,19 @@
     <img  class="imgTop" src="/Pictures/abklogo.png">
   </header>
   <div id="container">
-   Dette er en 'placeholdertekst', her vil det komme en eller annen introduksjon, f.eks: Velkommen til v&aringr produktvelger. Her kan du finne energi- og effektbehov p&aring bygg samt kj&oslashre simuleringer med forskjellige varmepumper
+   Dette er en 'placeholdertekst', her vil det komme en eller annen introduksjon, f.eks: Velkommen til v&aringr produktvelger.<br>
+   Her kan du finne energi- og effektbehov p&aring bygg samt kj&oslashre simuleringer med forskjellige varmepumper.<br>
+   Merk også at bildet nedenfor er et 'placeholderbanner'
   <div class="navigationBand">
-      <img src="/Pictures/navband-Effect.png">
+      <img src="/Pictures/navband-Effect.png"><br>
   </div>
 
   <!--Div containing area where user is active, input and output -->
   <div >
     <p>
       Vennligst fyll inn n&oslashdvendig informasjon nedenfor. <br>
-      Du m&aring fylle ut alle celler for &aring f&aring estimert effektbehovet. For informasjon om inndata kan du holde pekeren over sp&oslashrsm&aringlstegnet til h&oslashyre for inndatacellen.
+      Du m&aring fylle ut alle celler for &aring f&aring estimert effektbehovet.<br>
+      For informasjon om inndata kan du holde pekeren over sp&oslashrsm&aringlstegnet til h&oslashyre for inndatacellen.<br>
     </p>
     <!--Div containing the inputs -->
     <div class="inputArea">
@@ -101,7 +104,7 @@
       </div>
       <p>
          <span>Bygge&aringr:</span>
-           <input class="inndata" id="buildingYear" onClick="this.select()"><span class="units"></span>
+           <input class="inndata" id="buildingYear" type="number" onClick="this.select()"><span class="units"></span>
          <span class="dataTip" data-tip=  "Dette brukes for &aring estimere standarden til bygget. Ved eksisterende bygg som har blitt rehabilitert bruker du dato for rehabiliteringen ">
          <img class="icon"src="/Pictures/question.png">
          </span>
@@ -281,30 +284,30 @@
       <p>
          <span>Effektbehov ved DUT</span>
            <span class="resultSpan" id="effektBehovUtdata">0 kW </span>
-           <span class="dataTip" data-tip=  "Effektbehovet vurderes fra inndata ovenfor.  ">
+           <!--<span class="dataTip" data-tip=  "Effektbehovet vurderes fra inndata ovenfor.  ">
            <img class="icon"src="/Pictures/question.png">
-           </span>
+           </span>-->
       </p>
       <p>
          <span>- Romoppvarming</span>
            <span class="resultSpan" id="effektBehovRomUtdata">0 kW </span>
-           <span class="dataTip" data-tip=  "Effektbehovet vurderes fra inndata ovenfor.  ">
+           <!--<span class="dataTip" data-tip=  "Effektbehovet vurderes fra inndata ovenfor.  ">
            <img class="icon"src="/Pictures/question.png">
-           </span>
+           </span>-->
       </p>
       <p>
          <span>-Tappevann</span>
            <span class="resultSpan" id="effektBehovTappevannUtdata">0 kW </span>
-           <span class="dataTip" data-tip=  "Effektbehovet vurderes fra inndata ovenfor.  ">
+           <!--<span class="dataTip" data-tip=  "Effektbehovet vurderes fra inndata ovenfor.  ">
            <img class="icon"src="/Pictures/question.png">
-           </span>
+           </span>-->
       </p>
       <p>
          <span>Spesifikt effektbehov</span>
            <span class="resultSpan blink" id="effektBehovSpesifikkUtdata">0 W/m&sup2 </span>
-           <span class="dataTip" data-tip=  "Dette er effektbehovet per m&sup2, en god pekepinn p&aring hvorvidt beregningen er realistisk.">
+           <!--<span class="dataTip" data-tip=  "Dette er effektbehovet per m&sup2, en god pekepinn p&aring hvorvidt beregningen er realistisk.">
            <img class="icon"src="/Pictures/question.png">
-           </span>
+         </span>-->
       </p>
     </div>
   </div>

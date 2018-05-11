@@ -1363,6 +1363,7 @@ $('#area').on('input', function() {
 
 
 $('#buildingYear').on('input', function() {
+  if($("#buildingYear").val() > 0 ){
   if($("#buildingYear").val() >=2015 ){
     $("#balanseTempVerdi").val(10);
     $("#balanseTempVerdiUtdata").html("10 &#176;C");
@@ -1389,7 +1390,7 @@ $('#buildingYear').on('input', function() {
                     getGlobalTemperatureArray(globalTempMean,globalTempDOT);
                     updateEffectValues();
                   }
-});
+}});
 
 $('#yearMeanForCalculation').on('input', function() {
   globalTempMean = parseFloat($('#yearMeanForCalculation').val().replace(',','.'));
@@ -1398,15 +1399,6 @@ $('#yearMeanForCalculation').on('input', function() {
 $('#dOTForCalculation').on('input', function() {
   globalTempDOT = parseFloat($('#dOTForCalculation').val().replace(',','.'));
 });
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1441,7 +1433,7 @@ jQuery('.info').on('click', function(event){
 //////////////////////////////////// KNAPPPER ///////////////////////////////////////////
 var effectCheck = function(){
   if ($('#buildingYear').val() >= 2015){
-    if (parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.8 * (21 - $('#DUTverdi').val()) / 41 * 30){
+    if (parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.6 * (21 - $('#DUTverdi').val()) / 41 * 30){
       $('.blink').blink({
           delay: 400
       });
@@ -1449,28 +1441,28 @@ var effectCheck = function(){
   }
 
   if ($('#buildingYear').val() >= 2010 && $('#buildingYear').val() < 2015){
-    if (parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.8 * (21 - $('#DUTverdi').val()) / 41 * 30){
+    if (parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.6 * (21 - $('#DUTverdi').val()) / 41 * 30){
       $('.blink').blink({
           delay: 400
       });
     }
   }
   if ($('#buildingYear').val() >= 1997 && $('#buildingYear').val() < 2010){
-    if(parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.8 * (-1*$('#DUTverdi').val() + 20)) {
+    if(parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.7 * (-1*$('#DUTverdi').val() + 20)) {
       $('.blink').blink({
           delay: 400
       });
     }
   }
   if ($('#buildingYear').val() < 1997){
-    if(parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.8 * (-1.5*$('#DUTverdi').val() + 30)) {
+    if(parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.7 * (-1.5*$('#DUTverdi').val() + 30)) {
       $('.blink').blink({
           delay: 400
       });
     }
   }
   if ($('#buildingYear').val() < 1987){
-    if(parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.8  * (-1.8*$('#DUTverdi').val() + 37)) {
+    if(parseFloat($('#effektBehovSpesifikkUtdata').text()) < 0.7  * (-1.8*$('#DUTverdi').val() + 37)) {
       $('.blink').blink({
           delay: 400
       });
